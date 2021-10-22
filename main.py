@@ -1,6 +1,6 @@
 # Cos jak filmweb:
 #
-# 1. Lista seriali, filmow , filmow krotkometrazowych.
+# 1. Lista seriali, filmow, filmow krotkometrazowych.
 # 2. Dzielo ma miec tytul, opis, srednia ocene;
 # 3. Seriale maja miec sezony,
 # 4. Kazdy sezon ma miec liste odcinkow
@@ -13,6 +13,9 @@
 # 11. Podpowiedzi dla uzytkownikow w oparciu o oceny
 #
 # Docstrings + typehints + no getters or setters
+
+from src.classes.show_classes import Show
+
 
 def main():
     pass
