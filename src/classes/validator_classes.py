@@ -72,16 +72,25 @@ class SeasonsNumberValidator(Validator):
             return number_of_seasons
         else:
             raise ValueError(f'The number of seasons must be an integer and cannot exceed '
-                             f'{MAX_DURATION}!')
+                             f'{MAX_SEASONS}!')
 
 
 class EpisodesNumberValidator(Validator):
 
     @classmethod
-    def validate(cls, episodes_per_season: int):
-        if isinstance(episodes_per_season, int) and episodes_per_season <= MAX_EPISODES_PER_SEASON:
-            return episodes_per_season
+    def validate(cls, number_of_episodes: int):
+        if isinstance(number_of_episodes, int) and number_of_episodes <= MAX_EPISODES_PER_SEASON:
+            return number_of_episodes
         else:
-            raise ValueError(f'The number of episodes per season must be an integer and cannot exceed '
+            raise ValueError(f'The number of episodes must be an integer and cannot exceed '
                              f'{MAX_EPISODES_PER_SEASON}!')
 
+
+class NumberValidator(Validator):
+
+    @classmethod
+    def validate(cls, number: int):
+        if isinstance(number, int):
+            return number
+        else:
+            raise ValueError(f'The number of episodes must be an integer!')

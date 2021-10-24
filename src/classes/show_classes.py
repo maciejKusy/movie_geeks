@@ -1,11 +1,11 @@
-from validator_classes import TitleValidator, DescriptionValidator, GenreValidator, AuthorValidator, \
-    DurationValidator, SeasonsNumberValidator, EpisodesNumberValidator
+from .validator_classes import TitleValidator, DescriptionValidator, GenreValidator, AuthorValidator, \
+    DurationValidator, SeasonsNumberValidator, EpisodesNumberValidator, NumberValidator
 
 
 class Show:
 
     def __init__(self, show_title: str, description: str, genre: str):
-        self.title = TitleValidator.validate(show_title)
+        self.title_ = TitleValidator.validate(show_title)
         self.description = DescriptionValidator.validate(description)
         self.genre = GenreValidator.validate(genre)
         self.average_score = 0
@@ -13,13 +13,13 @@ class Show:
 
 class Film(Show):
 
-    def __init__(self, show_title: str, description: str, director: str, duration_in_minutes: int):
-        super().__init__(show_title, description)
+    def __init__(self, show_title: str, description: str, genre: str, director: str, duration_in_minutes: int):
+        super().__init__(show_title, description, genre)
         self.director = AuthorValidator.validate(director)
         self.duration_in_minutes = DurationValidator.validate(duration_in_minutes)
 
     def __str__(self):
-        return f'{self.title.title()}\n' \
+        return f'{self.title_.title()}\n' \
                f'{self.genre.title()}\n' \
                f'Directed by: {self.director.title()}\n' \
                f'Duration: {self.duration_in_minutes} minutes\n' \
@@ -35,7 +35,7 @@ class Series(Show):
         self.seasons = []
 
     def __str__(self):
-        return f'{self.title.title()}\n' \
+        return f'{self.title_.title()}\n' \
                f'Created by: {self.creator}\n' \
                f'Description: {self.description}\n' \
                f'No. of seasons: {self.number_of_seasons}\n' \
@@ -52,20 +52,19 @@ class Series(Show):
         return
 
 
-class Short(Show):
-
-    def __init__(self):
-        super().__init__()
-        pass
-
-
 class Season:
 
-    def __init__(self):
-        pass
+    def __init__(self, season_number: int, number_of_episodes: int):
+        self.number = NumberValidator.validate(season_number)
+        self.number_of_episodes = EpisodesNumberValidator.validate(number_of_episodes)
+        self.episodes = []
 
 
 class Episode:
 
-    def __init__(self):
-        pass
+    def __init__(self, episode_title, director, description):
+        self.episode_title = TitleValidator.validate(episode_title)
+        self.director = AuthorValidator.validate(director)
+        self.description = DescriptionValidator.validate(description)
+
+
