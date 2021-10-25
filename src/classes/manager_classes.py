@@ -1,4 +1,4 @@
-from .show_classes import Film, Series
+from .show_classes import Film, Series, Season, Episode
 from pickle import dump, load
 from os import listdir
 
@@ -20,15 +20,9 @@ class ShowRepositoryManager:
         list_of_series = [series[0:-2:] for series in list_of_series_binary_files]
         return list_of_series
 
-    def create_film_and_add_to_repository(self):
+    def create_film_and_add_to_repository(self, title: str, description: str, genre: str, year_of_release: int,
+                                          director: str, duration_in_minutes: int):
         try:
-            title = input('Title:\n').lstrip().rstrip()
-            description = input('Description:\n')
-            genre = input('Genre:\n').lstrip().rstrip()
-            year_of_release = int(input('Year of release:\n'))
-            director = input('Director:\n')
-            duration_in_minutes = int(input('Duration (minutes):\n'))
-
             film_created = Film(title, description, genre, year_of_release, director, duration_in_minutes)
             if str(film_created) in self.list_all_films_in_repository():
                 print('Film already in repository!')
@@ -40,15 +34,9 @@ class ShowRepositoryManager:
         except ValueError as error:
             print(error)
 
-    def create_series_and_add_to_repository(self):
+    def create_series_and_add_to_repository(self, title: str, description: str, genre: str, year_of_release: int,
+                                            creator: str, number_of_seasons: int):
         try:
-            title = input('Title:\n').lstrip().rstrip()
-            description = input('Description:\n')
-            genre = input('Genre:\n').lstrip().rstrip()
-            year_of_release = int(input('Year of release:\n'))
-            creator = input('Creator:\n')
-            number_of_seasons = int(input('Number of seasons:\n'))
-
             series_created = Series(title, description, genre, year_of_release, creator, number_of_seasons)
             if str(series_created) in self.list_all_series_in_repository():
                 print('Series already in repository!')
@@ -60,11 +48,26 @@ class ShowRepositoryManager:
         except ValueError as error:
             print(error)
 
-    def create_season_and_add_to_series(self):
-        pass
+    @classmethod
+    def create_season_and_add_to_series(cls, series_instance: Series, season_number: int, number_of_episodes: int):
+        try:
+            season_created = Season(season_number, number_of_episodes)
+            series_instance.seasons.append(season_created)
+        except ValueError as error:
+            print(error)
 
-    def create_episode_and_add_to_season(self):
-        pass
+    @classmethod
+    def create_episode_and_add_to_season(cls, season_instance: Season, episode_number: int, title: str, director: str,
+                                         description: str):
+        try:
+            episode_created = Episode(episode_number, title, director, description)
+            if str(episode_created) in season_instance.create_list_of_episodes():
+                print('Episode with this number already present in this season!')
+                return
+            else:
+                season_instance.episodes.append(episode_created)
+        except ValueError as error:
+            print(error)
 
     @classmethod
     def __add_film_to_repository(cls, film_object: Film):
@@ -73,19 +76,19 @@ class ShowRepositoryManager:
             dump(film_object, film_binary_file)
 
     @classmethod
-    def __retrieve_film_from_repository(cls, film_class_obj_string: str):
-        with open(f'show_repository/films/{film_class_obj_string}.p', 'rb') as film_binary_file:
+    def __retrieve_film_from_repository(cls, film_instance_string: str):
+        with open(f'show_repository/films/{film_instance_string}.p', 'rb') as film_binary_file:
             retrieved_film = load(film_binary_file)
             return retrieved_film
 
     @classmethod
-    def __add_series_to_repository(cls, series_object: Series):
-        file_title = str(series_object)
+    def __add_series_to_repository(cls, series_instance: Series):
+        file_title = str(series_instance)
         with open(f'show_repository/series/{file_title}.p', 'wb') as series_binary_file:
-            dump(series_object, series_binary_file)
+            dump(series_instance, series_binary_file)
 
     @classmethod
-    def __retrieve_series_from_repository(cls, series_class_obj_string: str):
-        with open(f'show_repository/series/{series_class_obj_string}.p', 'rb') as series_binary_file:
-            retrieved_film = load(series_binary_file)
-            return retrieved_film
+    def __retrieve_series_from_repository(cls, series_instance_string: str):
+        with open(f'show_repository/series/{series_instance_string}.p', 'rb') as series_binary_file:
+            retrieved_series = load(series_binary_file)
+            return retrieved_series

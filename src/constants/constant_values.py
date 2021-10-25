@@ -1,7 +1,7 @@
 from typing import List
 
 GENRES: List[str] = ['horror', 'drama', 'comedy', 'crime thriller', 'political thriller', 'science-fiction', 'fantasy',
-                    'psychological thriller', 'sitcom', 'documentary']
+                    'psychological thriller', 'sitcom', 'documentary', 'kids show']
 TITLE_MAX_LENGTH = 100
 DESCRIPTION_MAX_LENGTH = 200
 AUTHOR_NAME_MAX_LENGTH = 50

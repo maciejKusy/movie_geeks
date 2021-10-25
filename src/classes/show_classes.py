@@ -36,7 +36,7 @@ class Series(Show):
     def __str__(self):
         return f'{self.title_.title()} ({self.year_of_release}) - {self.number_of_seasons} seasons'
 
-    def create_printable_episode_list(self):
+    def create_printable_list_of_episodes(self):
         episode_list = ''
         if self.seasons:
             for season in self.seasons:
@@ -49,18 +49,28 @@ class Series(Show):
 
 class Season:
 
-    def __init__(self, season_number: int,
-                 number_of_episodes: int):
+    def __init__(self, season_number: int, number_of_episodes: int):
         self.number = NumberValidator.validate(season_number)
         self.number_of_episodes = EpisodesNumberValidator.validate(number_of_episodes)
         self.episodes = []
 
+    def __str__(self):
+        return f'Season {self.number}'
+
+    def create_list_of_episodes(self):
+        episode_list = []
+        for episode in self.episodes:
+            episode_list.append(str(episode))
+        return episode_list
+
 
 class Episode:
 
-    def __init__(self, episode_title: str,
-                 director: str,
-                 description: str):
+    def __init__(self, episode_number: int, episode_title: str, director: str, description: str):
+        self.number = NumberValidator.validate(episode_number)
         self.episode_title = TitleValidator.validate(episode_title)
         self.director = AuthorValidator.validate(director)
         self.description = DescriptionValidator.validate(description)
+
+    def __str__(self):
+        return f'Episode {self.number} - {self.episode_title}'
