@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from ..constants.constant_values import GENRES, TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH, AUTHOR_NAME_MAX_LENGTH,\
-    MAX_DURATION, MAX_SEASONS, MAX_EPISODES_PER_SEASON, YEAR_OF_FIRST_MOVIE
+    MAX_DURATION, MAX_SEASONS, MAX_EPISODES_PER_SEASON, YEAR_OF_FIRST_MOVIE, MINIMUM_RATING, MAXIMUM_RATING
 
 
 class Validator(ABC):
@@ -27,7 +27,7 @@ class DescriptionValidator(Validator):
     @classmethod
     def validate(cls, description: str):
         if isinstance(description, str) and len(description) <= DESCRIPTION_MAX_LENGTH:
-            return description.lower()
+            return description
         else:
             raise ValueError(f'The description must be a string and cannot exceed '
                              f'{DESCRIPTION_MAX_LENGTH} characters!')
@@ -106,3 +106,13 @@ class YearOfReleaseValidator(Validator):
             return year_of_release
         else:
             raise ValueError(f'The year of release must be an integer and fall between {YEAR_OF_FIRST_MOVIE} and now.')
+
+
+class RatingValidator(Validator):
+
+    @classmethod
+    def validate(cls, rating: int):
+        if isinstance(rating, int) and MINIMUM_RATING <= rating <= MAXIMUM_RATING:
+            return rating
+        else:
+            raise ValueError(f'The rating should be an integer between {MINIMUM_RATING} and {MAXIMUM_RATING}!')

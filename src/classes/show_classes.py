@@ -3,13 +3,28 @@ from .validator_classes import TitleValidator, DescriptionValidator, GenreValida
 
 
 class Show:
-
+    """
+    Holds all the attributes of a show (whether it's a film or a series). Also holds all the ratings that a given
+    show has received along with the userID of the rating source (user) in a dict. Has a method for adding a rating
+    and for re-calculating the average rating. The latter should be triggered whenever a rating is added which
+    is handled by the CommonUser class.
+    """
     def __init__(self, show_title: str, description: str, genre: str, year_of_release: int):
         self.title_ = TitleValidator.validate(show_title)
         self.description = DescriptionValidator.validate(description)
         self.genre = GenreValidator.validate(genre)
-        self.average_score = 0
+        self.all_ratings = dict()
+        self.average_rating = 0
         self.year_of_release = YearOfReleaseValidator.validate(year_of_release)
+
+    def __str__(self):
+        return f'{self.title_.title()} ({self.year_of_release})'
+
+    def add_rating(self, user_id_of_rating_provider: str, rating_value: int):
+        self.all_ratings.update({user_id_of_rating_provider: rating_value})
+
+    def calculate_average_rating(self):
+        self.average_rating = sum(self.all_ratings.values()) / len(self.all_ratings.values())
 
 
 class Film(Show):
@@ -20,8 +35,14 @@ class Film(Show):
         self.director = AuthorValidator.validate(director)
         self.duration_in_minutes = DurationValidator.validate(duration_in_minutes)
 
-    def __str__(self):
-        return f'{self.title_.title()} ({self.year_of_release})'
+    def display_full_film_info(self):
+        return f'{str(self)}\n' \
+               f'{self.genre.capitalize()}\n' \
+               f'Directed by: {self.director.title()}\n' \
+               f'Duration: {self.duration_in_minutes} minutes\n' \
+               f'Average rating: {self.average_rating}\n' \
+               f'Rated {len(self.all_ratings)} times\n' \
+               f'Short description:\n{self.description}\n'
 
 
 class Series(Show):
@@ -32,9 +53,6 @@ class Series(Show):
         self.creator = AuthorValidator.validate(creator)
         self.number_of_seasons = SeasonsNumberValidator.validate(number_of_seasons)
         self.seasons = []
-
-    def __str__(self):
-        return f'{self.title_.title()} ({self.year_of_release}) - {self.number_of_seasons} seasons'
 
     def create_printable_list_of_episodes(self):
         episode_list = ''

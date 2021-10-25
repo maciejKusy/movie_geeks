@@ -1,20 +1,39 @@
+from .validator_classes import RatingValidator
+from .manager_classes import ShowRepositoryManager
 
 
 class User:
 
-    def __init__(self):
-        pass
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.user_ratings = dict()
+        self.to_watch_list = []
 
 
 class CommonUser(User):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, user_id):
+        super().__init__(user_id)
         pass
 
+    @classmethod
+    def __handle_value_error(cls, error):
+        print(error)
 
-class Admin(User):
+    def rate_film(self, film_instance_string: str, user_rating: int):
+        try:
+            user_rating = RatingValidator.validate(user_rating)
+            film_rated = ShowRepositoryManager.retrieve_film_from_repository(film_instance_string)
+            self.user_ratings.update({str(film_rated): {'genre': film_rated.genre, 'rating': user_rating}})
+            film_rated.add_rating(self.user_id, user_rating)
+            film_rated.calculate_average_rating()
+            ShowRepositoryManager.add_film_to_repository(film_rated)
+            return
+        except ValueError as error:
+            self.__handle_value_error(error)
 
-    def __init__(self):
-        super().__init__()
+    def receive_recommendations(self):
         pass
+
+    def add_show_to_user_to_watch_list(self, show_instance_string):
+        self.to_watch_list.append(show_instance_string)
