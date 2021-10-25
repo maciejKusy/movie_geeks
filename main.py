@@ -20,7 +20,7 @@ from src.classes.manager_classes import ShowRepositoryManager
 
 def main():
     manager = ShowRepositoryManager()
-    manager.create_film_and_add_to_repository()
+    manager.create_series_and_add_to_repository()
 
 if __name__ == '__main__':
     main()

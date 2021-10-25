@@ -81,11 +81,11 @@ class ShowRepositoryManager:
     @classmethod
     def __add_series_to_repository(cls, series_object: Series):
         file_title = str(series_object)
-        with open(f'show_repository/films/{file_title}.p', 'wb') as series_binary_file:
+        with open(f'show_repository/series/{file_title}.p', 'wb') as series_binary_file:
             dump(series_object, series_binary_file)
 
     @classmethod
     def __retrieve_series_from_repository(cls, series_class_obj_string: str):
-        with open(f'show_repository/films/{series_class_obj_string}.p', 'rb') as series_binary_file:
+        with open(f'show_repository/series/{series_class_obj_string}.p', 'rb') as series_binary_file:
             retrieved_film = load(series_binary_file)
             return retrieved_film
