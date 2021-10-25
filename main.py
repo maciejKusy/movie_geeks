@@ -14,15 +14,13 @@
 #
 # Docstrings + typehints + no getters or setters
 
-from src.classes.show_classes import Show
-from src.classes.manager_classes import RecordManager
+
+from src.classes.manager_classes import ShowRepositoryManager
 
 
 def main():
-    manager = RecordManager()
+    manager = ShowRepositoryManager()
     manager.create_film_and_add_to_repository()
-
-
 
 if __name__ == '__main__':
     main()
