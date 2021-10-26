@@ -1,6 +1,7 @@
 from .show_classes import Film, Series, Season, Episode
 from pickle import dump, load
 from os import listdir
+from ..constants.constant_values import STORAGE_FILE_EXTENSION
 
 
 class FilmCreator:
@@ -75,36 +76,36 @@ class ShowRepositoryManager:
     @classmethod
     def list_all_films_in_repository(cls):
         list_of_film_binary_files = listdir('show_repository/films')
-        list_of_films = [film[0:-2:].title() for film in list_of_film_binary_files]
+        list_of_films = [film.title().rstrip(STORAGE_FILE_EXTENSION) for film in list_of_film_binary_files]
         return list_of_films
 
     @classmethod
     def list_all_series_in_repository(cls):
         list_of_series_binary_files = listdir('show_repository/series')
-        list_of_series = [series[0:-2:] for series in list_of_series_binary_files]
+        list_of_series = [series.title().rstrip(STORAGE_FILE_EXTENSION) for series in list_of_series_binary_files]
         return list_of_series
 
     @classmethod
     def add_film_to_repository(cls, film_instance: Film):
         file_title = str(film_instance)
-        with open(f'show_repository/films/{file_title}.p', 'wb') as film_binary_file:
+        with open(f'show_repository/films/{file_title}{STORAGE_FILE_EXTENSION}', 'wb') as film_binary_file:
             dump(film_instance, film_binary_file)
 
     @classmethod
     def add_series_to_repository(cls, series_instance: Series):
         file_title = str(series_instance)
-        with open(f'show_repository/series/{file_title}.p', 'wb') as series_binary_file:
+        with open(f'show_repository/series/{file_title}{STORAGE_FILE_EXTENSION}', 'wb') as series_binary_file:
             dump(series_instance, series_binary_file)
 
     @classmethod
     def retrieve_film_from_repository(cls, film_instance_string: str):
-        with open(f'show_repository/films/{film_instance_string}.p', 'rb') as film_binary_file:
+        with open(f'show_repository/films/{film_instance_string}{STORAGE_FILE_EXTENSION}', 'rb') as film_binary_file:
             retrieved_film = load(film_binary_file)
             return retrieved_film
 
     @classmethod
     def retrieve_series_from_repository(cls, series_instance_string: str):
-        with open(f'show_repository/series/{series_instance_string}.p', 'rb') as series_binary_file:
+        with open(f'show_repository/series/{series_instance_string}{STORAGE_FILE_EXTENSION}', 'rb') as series_binary_file:
             retrieved_series = load(series_binary_file)
             return retrieved_series
 
@@ -121,3 +122,23 @@ class ShowRepositoryViewer:
     def view_particular_film_from_repository(cls, film_instance_string: str):
         film_viewed = ShowRepositoryManager.retrieve_film_from_repository(film_instance_string)
         print(film_viewed.display_full_film_info())
+
+    @classmethod
+    def display_full_film_info(cls, film_class_instance):
+        return f'{str(film_class_instance)}\n' \
+               f'{film_class_instance.genre.capitalize()}\n' \
+               f'Directed by: {film_class_instance.director.title()}\n' \
+               f'Duration: {film_class_instance.duration_in_minutes} minutes\n' \
+               f'Average rating: {film_class_instance.average_rating}\n' \
+               f'Rated {len(film_class_instance.all_ratings)} times\n' \
+               f'Short description:\n{film_class_instance.description}\n'
+
+    @classmethod
+    def create_printable_list_of_episodes_for_series(cls, series_class_instance):
+        episode_list = ''
+        if series_class_instance.seasons:
+            for season in series_class_instance.seasons:
+                episode_list += f'{str(season)}\n'
+                for episode in season.episodes:
+                    episode_list += f'{str(episode)}\n'
+            return episode_list

@@ -35,15 +35,6 @@ class Film(Show):
         self.director = AuthorValidator.validate(director)
         self.duration_in_minutes = DurationValidator.validate(duration_in_minutes)
 
-    def display_full_film_info(self):
-        return f'{str(self)}\n' \
-               f'{self.genre.capitalize()}\n' \
-               f'Directed by: {self.director.title()}\n' \
-               f'Duration: {self.duration_in_minutes} minutes\n' \
-               f'Average rating: {self.average_rating}\n' \
-               f'Rated {len(self.all_ratings)} times\n' \
-               f'Short description:\n{self.description}\n'
-
 
 class Series(Show):
 
@@ -53,16 +44,6 @@ class Series(Show):
         self.creator = AuthorValidator.validate(creator)
         self.number_of_seasons = SeasonsNumberValidator.validate(number_of_seasons)
         self.seasons = []
-
-    def create_printable_list_of_episodes(self):
-        episode_list = ''
-        if self.seasons:
-            for season in self.seasons:
-                episode_list += f'{str(season)}\n'
-                for episode in season.episodes:
-                    episode_list += f'{str(episode)}\n'
-            return episode_list
-        return
 
 
 class Season:
