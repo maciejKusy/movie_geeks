@@ -9,16 +9,21 @@ class Show:
     and for re-calculating the average rating. The latter should be triggered whenever a rating is added which
     is handled by the CommonUser class.
     """
-    def __init__(self, show_title: str, description: str, genre: str, year_of_release: int):
-        self.title_ = TitleValidator.validate(show_title)
+    def __init__(self, show_title: str,
+                 description: str,
+                 genre: str,
+                 year_of_release: int,
+                 all_ratings=None,
+                 average_rating=None):
+        self.show_title = TitleValidator.validate(show_title)
         self.description = DescriptionValidator.validate(description)
         self.genre = GenreValidator.validate(genre)
-        self.all_ratings = dict()
-        self.average_rating = 0
+        self.all_ratings = dict() if all_ratings is None else all_ratings
+        self.average_rating = 0 if average_rating is None else average_rating
         self.year_of_release = YearOfReleaseValidator.validate(year_of_release)
 
     def __str__(self):
-        return f'{self.title_.title()} ({self.year_of_release})'
+        return f'{self.show_title.title()} ({self.year_of_release})'
 
     def add_rating(self, user_id_of_rating_provider: str, rating_value: int):
         self.all_ratings.update({user_id_of_rating_provider: rating_value})
@@ -29,26 +34,40 @@ class Show:
 
 class Film(Show):
 
-    def __init__(self, show_title: str, description: str, genre: str, year_of_release: int, director: str,
-                 duration_in_minutes: int):
-        super().__init__(show_title, description, genre, year_of_release)
+    def __init__(self, show_title: str,
+                 description: str,
+                 genre: str,
+                 year_of_release: int,
+                 director: str,
+                 duration_in_minutes: int,
+                 all_ratings=None,
+                 average_rating=None):
+        super().__init__(show_title, description, genre, year_of_release, all_ratings, average_rating)
         self.director = AuthorValidator.validate(director)
         self.duration_in_minutes = DurationValidator.validate(duration_in_minutes)
 
 
 class Series(Show):
 
-    def __init__(self, show_title: str, description: str, genre: str, year_of_release: int, creator: str,
-                 number_of_seasons: int):
-        super().__init__(show_title, description, genre, year_of_release)
+    def __init__(self, show_title: str,
+                 description: str,
+                 genre: str,
+                 year_of_release: int,
+                 creator: str,
+                 number_of_seasons: int,
+                 all_ratings=None,
+                 average_rating=None,
+                 seasons=None):
+        super().__init__(show_title, description, genre, year_of_release, all_ratings, average_rating)
         self.creator = AuthorValidator.validate(creator)
         self.number_of_seasons = SeasonsNumberValidator.validate(number_of_seasons)
-        self.seasons = []
+        self.seasons = [] if seasons is None else seasons
 
 
 class Season:
 
-    def __init__(self, season_number: int, number_of_episodes: int):
+    def __init__(self, season_number: int,
+                 number_of_episodes: int):
         self.number = NumberValidator.validate(season_number)
         self.number_of_episodes = EpisodesNumberValidator.validate(number_of_episodes)
         self.episodes = []
@@ -65,7 +84,10 @@ class Season:
 
 class Episode:
 
-    def __init__(self, episode_number: int, episode_title: str, director: str, description: str):
+    def __init__(self, episode_number: int,
+                 episode_title: str,
+                 director: str,
+                 description: str):
         self.number = NumberValidator.validate(episode_number)
         self.episode_title = TitleValidator.validate(episode_title)
         self.director = AuthorValidator.validate(director)

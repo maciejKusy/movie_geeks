@@ -15,8 +15,9 @@
 # Docstrings + typehints + no getters or setters
 
 
-from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer
+from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer, SeriesCreator
 from src.classes.user_classes import CommonUser
+import json
 
 
 def main():
@@ -34,8 +35,6 @@ def main():
     # print(user1.user_ratings)
     # print(user2.user_ratings)
     # print(user3.user_ratings)
-    # ShowRepositoryViewer.view_particular_film_from_repository('Casablanca (1958)')
-    # print(user1.create_preference_table())
 
     # ---------- BELOW SNIPPET ILLUSTRATES THE PROCESS OF RECEIVING SUGGESTIONS BASED ON USER RATING ---------- #
 
@@ -54,6 +53,7 @@ def main():
     # FilmCreator.create_film_and_add_to_repository('comedy 3', '_', 'comedy', 2003, 'some gal', 92)
     # FilmCreator.create_film_and_add_to_repository('comedy 4', '_', 'comedy', 2010, 'some dir', 107)
     # FilmCreator.create_film_and_add_to_repository('comedy 4', '_', 'comedy', 1995, 'the dude', 99)
+
     pass
 
 

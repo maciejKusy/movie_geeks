@@ -1,7 +1,8 @@
 from .show_classes import Film, Series, Season, Episode
-from pickle import dump, load
+from json import dump, dumps, load, loads
 from os import listdir
-from ..constants.constant_values import STORAGE_FILE_EXTENSION
+from ..constants.constant_values import STORAGE_FILE_EXTENSION, FILM_REPOSITORY_FOLDER_PATH, \
+    SERIES_REPOSITORY_FOLDER_PATH
 
 
 class FilmCreator:
@@ -75,38 +76,46 @@ class ShowRepositoryManager:
 
     @classmethod
     def list_all_films_in_repository(cls):
-        list_of_film_binary_files = listdir('show_repository/films')
-        list_of_films = [film.title().rstrip(STORAGE_FILE_EXTENSION) for film in list_of_film_binary_files]
+        list_of_film_json_files = listdir(FILM_REPOSITORY_FOLDER_PATH)
+        list_of_films = [film.rstrip(STORAGE_FILE_EXTENSION).title() for film in list_of_film_json_files]
         return list_of_films
 
     @classmethod
     def list_all_series_in_repository(cls):
-        list_of_series_binary_files = listdir('show_repository/series')
-        list_of_series = [series.title().rstrip(STORAGE_FILE_EXTENSION) for series in list_of_series_binary_files]
+        list_of_series_json_files = listdir(SERIES_REPOSITORY_FOLDER_PATH)
+        list_of_series = [series.rstrip(STORAGE_FILE_EXTENSION).title() for series in list_of_series_json_files]
         return list_of_series
 
     @classmethod
     def add_film_to_repository(cls, film_instance: Film):
         file_title = str(film_instance)
-        with open(f'show_repository/films/{file_title}{STORAGE_FILE_EXTENSION}', 'wb') as film_binary_file:
-            dump(film_instance, film_binary_file)
+        with open(f'{FILM_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}', 'w+') as film_json_file:
+            film_json_string = dumps(film_instance.__dict__)
+            dump(film_json_string, film_json_file)
 
     @classmethod
     def add_series_to_repository(cls, series_instance: Series):
         file_title = str(series_instance)
-        with open(f'show_repository/series/{file_title}{STORAGE_FILE_EXTENSION}', 'wb') as series_binary_file:
-            dump(series_instance, series_binary_file)
+        with open(f'{SERIES_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}', 'w+') as series_json_file:
+            series_json_string = dumps(series_instance.__dict__)
+            dump(series_json_string, series_json_file)
 
     @classmethod
     def retrieve_film_from_repository(cls, film_instance_string: str):
-        with open(f'show_repository/films/{film_instance_string}{STORAGE_FILE_EXTENSION}', 'rb') as film_binary_file:
-            retrieved_film = load(film_binary_file)
+        with open(f'{FILM_REPOSITORY_FOLDER_PATH}{film_instance_string}{STORAGE_FILE_EXTENSION}') as \
+                film_json_file:
+            retrieved_film_json = load(film_json_file)
+            retrieved_film_json_dict = loads(retrieved_film_json)
+            retrieved_film = Film(**retrieved_film_json_dict)
             return retrieved_film
 
     @classmethod
     def retrieve_series_from_repository(cls, series_instance_string: str):
-        with open(f'show_repository/series/{series_instance_string}{STORAGE_FILE_EXTENSION}', 'rb') as series_binary_file:
-            retrieved_series = load(series_binary_file)
+        with open(f'{SERIES_REPOSITORY_FOLDER_PATH}{series_instance_string}{STORAGE_FILE_EXTENSION}') as \
+                series_json_file:
+            retrieved_series_json = load(series_json_file)
+            retrieved_series_json_dict = loads(retrieved_series_json)
+            retrieved_series = Series(**retrieved_series_json_dict)
             return retrieved_series
 
 
@@ -121,7 +130,7 @@ class ShowRepositoryViewer:
     @classmethod
     def view_particular_film_from_repository(cls, film_instance_string: str):
         film_viewed = ShowRepositoryManager.retrieve_film_from_repository(film_instance_string)
-        print(film_viewed.display_full_film_info())
+        print(cls.display_full_film_info(film_viewed))
 
     @classmethod
     def display_full_film_info(cls, film_class_instance):
