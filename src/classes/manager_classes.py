@@ -173,9 +173,21 @@ class RecommendationManager:
                 recommendation_number_table.update({genre: int(overall_rating // score_required_for_recommendation)})
         return recommendation_number_table
 
-    # @classmethod     TO BE COMPLETED
-    # def create_list_of_suggested_titles_for_user(cls, user_class_instance):
-    #     preference_table = cls.create_preference_table_for_user(user_class_instance)
-    #     recommendation_number_table = cls.create_recommendation_number_table_for_user(preference_table)
-    #     suggested_titles = list()
-    #     return recommendation_number_table
+    @classmethod
+    def create_list_of_suggested_titles_for_user(cls, user_class_instance):
+        preference_table = cls.create_preference_table_for_user(user_class_instance)
+        recommendation_number_table = cls.create_recommendation_number_table_for_user(preference_table)
+        suggested_films = list()
+        list_of_all_films = ShowRepositoryManager.list_all_films_in_repository()
+
+        for genre, number in recommendation_number_table.items():
+            for n in range(number):
+                for film in list_of_all_films:
+                    if film in user_class_instance.user_ratings.keys() or film in suggested_films:
+                        pass
+                    else:
+                        film_object = ShowRepositoryManager.retrieve_film_from_repository(film)
+                        if film_object.genre == genre:
+                            suggested_films.append(film)
+                            break
+        return suggested_films
