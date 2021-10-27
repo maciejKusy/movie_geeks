@@ -2,7 +2,7 @@ from .show_classes import Film, Series, Season, Episode
 from json import dump, dumps, load, loads
 from os import listdir
 from ..constants.constant_values import STORAGE_FILE_EXTENSION, FILM_REPOSITORY_FOLDER_PATH, \
-    SERIES_REPOSITORY_FOLDER_PATH
+    SERIES_REPOSITORY_FOLDER_PATH, GENRES, NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED
 
 
 class FilmCreator:
@@ -151,3 +151,31 @@ class ShowRepositoryViewer:
                 for episode in season.episodes:
                     episode_list += f'{str(episode)}\n'
             return episode_list
+
+
+class RecommendationManager:
+
+    @classmethod
+    def create_preference_table_for_user(cls, user_class_instance):
+        preference_table = dict.fromkeys(GENRES, 0)
+        for user_rating in user_class_instance.user_ratings:
+            preference_table[user_class_instance.user_ratings[user_rating]['genre']] += \
+                user_class_instance.user_ratings[user_rating]['rating']
+        return preference_table
+
+    @classmethod
+    def create_recommendation_number_table_for_user(cls, preference_table: dict):
+        sum_of_ratings = sum(preference_table.values())
+        score_required_for_recommendation = round(sum_of_ratings / NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED, 1)
+        recommendation_number_table = dict()
+        for genre, overall_rating in preference_table.items():
+            if overall_rating > 0 and score_required_for_recommendation > 0:
+                recommendation_number_table.update({genre: int(overall_rating // score_required_for_recommendation)})
+        return recommendation_number_table
+
+    # @classmethod     TO BE COMPLETED
+    # def create_list_of_suggested_titles_for_user(cls, user_class_instance):
+    #     preference_table = cls.create_preference_table_for_user(user_class_instance)
+    #     recommendation_number_table = cls.create_recommendation_number_table_for_user(preference_table)
+    #     suggested_titles = list()
+    #     return recommendation_number_table

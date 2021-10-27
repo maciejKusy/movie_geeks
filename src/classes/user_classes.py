@@ -1,6 +1,5 @@
 from .validator_classes import RatingValidator
 from .manager_classes import ShowRepositoryManager
-from ..constants.constant_values import GENRES
 
 
 class User:
@@ -37,15 +36,6 @@ class CommonUser(User):
 
     def add_rating(self, film_instance_string: str, genre: str, rating: int):
         self.user_ratings.update({film_instance_string: {'genre': genre, 'rating': rating}})
-
-    def create_preference_table(self):
-        preference_table = dict.fromkeys(GENRES, 0)
-        for user_rating in self.user_ratings:
-            preference_table[self.user_ratings[user_rating]['genre']] += self.user_ratings[user_rating]['rating']
-        return preference_table
-
-    def receive_recommendations(self):
-        pass
 
     def add_show_to_user_to_watch_list(self, show_instance_string):
         self.to_watch_list.append(show_instance_string)

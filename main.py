@@ -15,7 +15,8 @@
 # Docstrings + typehints + no getters or setters
 
 
-from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer, SeriesCreator
+from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer, SeriesCreator, \
+    RecommendationManager
 from src.classes.user_classes import CommonUser
 import json
 
