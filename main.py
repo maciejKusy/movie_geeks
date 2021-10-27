@@ -14,11 +14,14 @@
 #
 # Docstrings + typehints + no getters or setters
 
+# DAWAC TYPEHINTS DEFINIUJAC PARAMETRY INSTANCJI;
+# MYPY(typehints), BLACK(autoformatting), ISORT, FLAKE8;
+# Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
+# .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych
 
 from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer, SeriesCreator, \
     RecommendationManager
 from src.classes.user_classes import CommonUser
-import json
 
 
 def main():

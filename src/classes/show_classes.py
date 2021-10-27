@@ -15,14 +15,14 @@ class Show:
                  year_of_release: int,
                  all_ratings=None,
                  average_rating=None):
-        self.show_title = TitleValidator.validate(show_title)
-        self.description = DescriptionValidator.validate(description)
-        self.genre = GenreValidator.validate(genre)
-        self.all_ratings = dict() if all_ratings is None else all_ratings
-        self.average_rating = 0 if average_rating is None else average_rating
-        self.year_of_release = YearOfReleaseValidator.validate(year_of_release)
+        self.show_title: str = TitleValidator.validate(show_title)
+        self.description: str = DescriptionValidator.validate(description)
+        self.genre: str = GenreValidator.validate(genre)
+        self.all_ratings: dict = dict() if all_ratings is None else all_ratings
+        self.average_rating: float = 0 if average_rating is None else average_rating
+        self.year_of_release: int = YearOfReleaseValidator.validate(year_of_release)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.show_title.title()} ({self.year_of_release})'
 
     def add_rating(self, user_id_of_rating_provider: str, rating_value: int):

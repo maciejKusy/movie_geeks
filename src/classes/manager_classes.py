@@ -1,5 +1,5 @@
 from .show_classes import Film, Series, Season, Episode
-from json import dump, dumps, load, loads
+from json import dump, load
 from os import listdir
 from ..constants.constant_values import STORAGE_FILE_EXTENSION, FILM_REPOSITORY_FOLDER_PATH, \
     SERIES_REPOSITORY_FOLDER_PATH, GENRES, NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED
@@ -90,22 +90,19 @@ class ShowRepositoryManager:
     def add_film_to_repository(cls, film_instance: Film):
         file_title = str(film_instance)
         with open(f'{FILM_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}', 'w+') as film_json_file:
-            film_json_string = dumps(film_instance.__dict__)
-            dump(film_json_string, film_json_file)
+            dump(vars(film_instance), film_json_file)
 
     @classmethod
     def add_series_to_repository(cls, series_instance: Series):
         file_title = str(series_instance)
         with open(f'{SERIES_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}', 'w+') as series_json_file:
-            series_json_string = dumps(series_instance.__dict__)
-            dump(series_json_string, series_json_file)
+            dump(vars(series_instance), series_json_file)
 
     @classmethod
     def retrieve_film_from_repository(cls, film_instance_string: str):
         with open(f'{FILM_REPOSITORY_FOLDER_PATH}{film_instance_string}{STORAGE_FILE_EXTENSION}') as \
                 film_json_file:
-            retrieved_film_json = load(film_json_file)
-            retrieved_film_json_dict = loads(retrieved_film_json)
+            retrieved_film_json_dict = load(film_json_file)
             retrieved_film = Film(**retrieved_film_json_dict)
             return retrieved_film
 
@@ -113,8 +110,7 @@ class ShowRepositoryManager:
     def retrieve_series_from_repository(cls, series_instance_string: str):
         with open(f'{SERIES_REPOSITORY_FOLDER_PATH}{series_instance_string}{STORAGE_FILE_EXTENSION}') as \
                 series_json_file:
-            retrieved_series_json = load(series_json_file)
-            retrieved_series_json_dict = loads(retrieved_series_json)
+            retrieved_series_json_dict = load(series_json_file)
             retrieved_series = Series(**retrieved_series_json_dict)
             return retrieved_series
 
@@ -128,12 +124,23 @@ class ShowRepositoryViewer:
             print(f'{film}\n')
 
     @classmethod
+    def view_all_series_in_repository(cls):
+        list_of_series_in_repository = ShowRepositoryManager.list_all_series_in_repository()
+        for series in list_of_series_in_repository:
+            print(f'{series}\n')
+
+    @classmethod
     def view_particular_film_from_repository(cls, film_instance_string: str):
         film_viewed = ShowRepositoryManager.retrieve_film_from_repository(film_instance_string)
         print(cls.display_full_film_info(film_viewed))
 
     @classmethod
-    def display_full_film_info(cls, film_class_instance):
+    def view_particular_series_from_repository(cls, series_instance_string: str):
+        series_viewed = ShowRepositoryManager.retrieve_series_from_repository(series_instance_string)
+        print(cls.display_full_series_info(series_viewed))
+
+    @classmethod
+    def display_full_film_info(cls, film_class_instance: Film):
         return f'{str(film_class_instance)}\n' \
                f'{film_class_instance.genre.capitalize()}\n' \
                f'Directed by: {film_class_instance.director.title()}\n' \
@@ -143,7 +150,17 @@ class ShowRepositoryViewer:
                f'Short description:\n{film_class_instance.description}\n'
 
     @classmethod
-    def create_printable_list_of_episodes_for_series(cls, series_class_instance):
+    def display_full_series_info(cls, series_class_instance: Series):
+        return f'{str(series_class_instance)}\n' \
+               f'{series_class_instance.genre.capitalize()}\n' \
+               f'Created by: {series_class_instance.creator.title()}\n' \
+               f'Seasons: {series_class_instance.number_of_seasons}\n' \
+               f'Average rating: {series_class_instance.average_rating}\n' \
+               f'Rated {len(series_class_instance.all_ratings)} times\n' \
+               f'Short description: \n{series_class_instance.description}\n'
+
+    @classmethod
+    def create_printable_list_of_episodes_for_series(cls, series_class_instance: Series):
         episode_list = ''
         if series_class_instance.seasons:
             for season in series_class_instance.seasons:
@@ -173,7 +190,7 @@ class RecommendationManager:
                 recommendation_number_table.update({genre: int(overall_rating // score_required_for_recommendation)})
         return recommendation_number_table
 
-    @classmethod
+    @classmethod # TO BE CHANGED TO INCLUDE SERIES AS WELL!!!!
     def create_list_of_suggested_titles_for_user(cls, user_class_instance):
         preference_table = cls.create_preference_table_for_user(user_class_instance)
         recommendation_number_table = cls.create_recommendation_number_table_for_user(preference_table)
