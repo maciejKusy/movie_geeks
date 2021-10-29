@@ -19,8 +19,13 @@
 # Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
 # .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych
 
-from src.classes.manager_classes import FilmCreator, ShowRepositoryManager, ShowRepositoryViewer, SeriesCreator, \
-    RecommendationManager
+from src.classes.manager_classes import (
+    FilmCreator,
+    ShowRepositoryManager,
+    ShowRepositoryViewer,
+    SeriesCreator,
+    RecommendationManager,
+)
 from src.classes.user_classes import CommonUser
 
 
@@ -74,5 +79,5 @@ def main():
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
