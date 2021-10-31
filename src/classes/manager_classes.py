@@ -13,7 +13,6 @@ from .show_classes import Episode, Film, Season, Series
 
 
 class Creator:
-
     @classmethod
     def __handle_value_error(cls, error: ValueError):
         print(error)

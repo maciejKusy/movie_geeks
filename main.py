@@ -15,7 +15,7 @@
 # Docstrings + typehints + no getters or setters
 
 # Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
-# .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych
+# .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych takich jak API key
 
 from src.classes.manager_classes import (
     EpisodeCreator,

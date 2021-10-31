@@ -6,6 +6,7 @@ class User:
     """
     Holds the basic info for a user such as id, the users ratings and a to-watch list.
     """
+
     def __init__(self, user_id):
         self.user_id = user_id
         self.user_ratings = dict()
@@ -53,7 +54,7 @@ class CommonUser(User):
         """
         try:
             user_rating = RatingValidator.validate(user_rating)
-            series_rated = ShowRepositoryManager.retrieve_film_from_repository(
+            series_rated = ShowRepositoryManager.retrieve_series_from_repository(
                 series_instance_string
             )
 

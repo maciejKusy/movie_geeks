@@ -20,6 +20,7 @@ class Validator(ABC):
     An abstract class for validators - classes responsible for validating data that is passed to Show class
     constructors. ValueError is raised if any of the data fails validation.
     """
+
     @abstractmethod
     def validate(self, value):
         pass
