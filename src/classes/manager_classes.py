@@ -1,21 +1,30 @@
-from .show_classes import Film, Series, Season, Episode
-from json import dump, load
+from pickle import dump, load
 from os import listdir
+from typing import Dict, List
+
 from ..constants.constant_values import (
-    STORAGE_FILE_EXTENSION,
     FILM_REPOSITORY_FOLDER_PATH,
-    SERIES_REPOSITORY_FOLDER_PATH,
     GENRES,
     NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED,
+    SERIES_REPOSITORY_FOLDER_PATH,
+    STORAGE_FILE_EXTENSION,
 )
-from typing import List, Dict
+from .show_classes import Episode, Film, Season, Series
 
 
-class FilmCreator:
+class Creator:
+
+    @classmethod
+    def __handle_value_error(cls, error: ValueError):
+        print(error)
+
+
+class FilmCreator(Creator):
     """
     Responsible for creating instances of Film class and passing them to the appropriate ShowRepositoryManager method
     for storage in the film repository.
     """
+
     @classmethod
     def create_film_and_add_to_repository(
         cls,
@@ -34,7 +43,7 @@ class FilmCreator:
         :param director: the name of the director;
         :param duration_in_minutes: the duration of the movie expressed in minutes;
         :return: n/a - the objective of the method is to create a Film instance and pass it to the appropriate
-        method for storage in repository in the form of a .json file;
+        method for storage in repository in the form of a .p file;
         """
         try:
             film_created = Film(
@@ -56,14 +65,15 @@ class FilmCreator:
                 print(f"{str(film_created)} saved to repository!")
                 return
         except ValueError as error:
-            print(error)
+            cls.__handle_value_error(error)
 
 
-class SeriesCreator:
+class SeriesCreator(Creator):
     """
     Responsible for creating instances of Series class and passing them to the appropriate ShowRepositoryManager method
     for storage in the film repository.
     """
+
     @classmethod
     def create_series_and_add_to_repository(
         cls,
@@ -82,7 +92,7 @@ class SeriesCreator:
         :param creator: the name of the creator of the series;
         :param number_of_seasons: the number of seasons - self-explanatory;
         :return: n/a - the objective of the method is to create a Series instance and pass it to the appropriate
-        method for storage in repository in the form of a .json file;
+        method for storage in repository in the form of a .p file;
         """
         try:
             series_created = Series(
@@ -104,20 +114,18 @@ class SeriesCreator:
                 print(f"{str(series_created)} saved to repository!")
                 return
         except ValueError as error:
-            print(error)
+            cls.__handle_value_error(error)
 
 
-class SeasonCreator:
+class SeasonCreator(Creator):
     """
     Responsible for creating an instance of the Season class and adding it to seasons list of a particular Series
     instance (passed as an argument).
     """
+
     @classmethod
     def create_season_and_add_to_series(
-        cls,
-        series_instance: Series,
-        season_number: int,
-        number_of_episodes: int
+        cls, series_instance: Series, season_number: int, number_of_episodes: int
     ):
         """
         :param series_instance: a Series class instance that is to have a season added to it;
@@ -127,19 +135,23 @@ class SeasonCreator:
         """
         try:
             season_created = Season(
-                season_number=season_number,
-                number_of_episodes=number_of_episodes
+                season_number=season_number, number_of_episodes=number_of_episodes
             )
-            series_instance.seasons.append(season_created)
+            if str(season_created) in series_instance.create_list_of_seasons():
+                print("Season with this number already present in this series!")
+                return
+            else:
+                series_instance.seasons.append(season_created)
         except ValueError as error:
-            print(error)
+            cls.__handle_value_error(error)
 
 
-class EpisodeCreator:
+class EpisodeCreator(Creator):
     """
     Responsible for creating an instance of the Episode class and adding it to the episodes list of a given Season
     instance (passed as an argument).
     """
+
     @classmethod
     def create_episode_and_add_to_season(
         cls,
@@ -170,7 +182,7 @@ class EpisodeCreator:
             else:
                 season_instance.episodes.append(episode_created)
         except ValueError as error:
-            print(error)
+            cls.__handle_value_error(error)
 
 
 class ShowRepositoryManager:
@@ -178,6 +190,7 @@ class ShowRepositoryManager:
     Contains the logic for several basic operations on the show repository like adding or listing shows of
     a certain kind.
     """
+
     @classmethod
     def list_all_films_in_repository(cls) -> List[str]:
         """
@@ -209,61 +222,62 @@ class ShowRepositoryManager:
     @classmethod
     def add_film_to_repository(cls, film_instance: Film):
         """
-        Creates a .json file in with the same title as the string representation of the Film instance and dumps the
-        contents of the instance into the file using the json.dump() and vars() methods;
+        Creates a .p file in with the same title as the string representation of the Film instance and dumps the
+        contents of the instance into the file using the pickle.dump() and vars() methods;
         :param film_instance: an instance of the Film class;
         :return: n/a
         """
         file_title = str(film_instance)
         with open(
-            f"{FILM_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}", "w+"
-        ) as film_json_file:
-            dump(vars(film_instance), film_json_file)
+            f"{FILM_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}", "wb+"
+        ) as film_binary_file:
+            dump(film_instance, film_binary_file)
 
     @classmethod
     def add_series_to_repository(cls, series_instance: Series):
         """
-        Creates a .json file in with the same title as the string representation of the Series instance and dumps the
-        contents of the instance into the file using the json.dump() and vars() methods;
+        Creates .p file in with the same title as the string representation of the Series instance and dumps the
+        contents of the instance into the file using the pickle.dump() and vars() methods;
         :param series_instance: an instance of the Series class;
         :return: n/a
         """
         file_title = str(series_instance)
         with open(
-            f"{SERIES_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}", "w+"
-        ) as series_json_file:
-            dump(vars(series_instance), series_json_file)
+            f"{SERIES_REPOSITORY_FOLDER_PATH}{file_title}{STORAGE_FILE_EXTENSION}",
+            "wb+",
+        ) as series_binary_file:
+            dump(series_instance, series_binary_file)
 
     @classmethod
     def retrieve_film_from_repository(cls, film_instance_string: str) -> Film:
         """
         Takes the string representation of the Film instance as argument and retrieves from the film repository
-        a file with a matching title. Uses the json.load() method to retrieve a dictionary of the instance parameters
+        a file with a matching title. Uses the pickle.load() method to retrieve a dictionary of the instance parameters
         and re-instantiates the Film using Film(**parameters);
         :param film_instance_string: an instance of the Film class;
         :return: n/a
         """
         with open(
-            f"{FILM_REPOSITORY_FOLDER_PATH}{film_instance_string}{STORAGE_FILE_EXTENSION}"
-        ) as film_json_file:
-            retrieved_film_json_dict = load(film_json_file)
-            retrieved_film = Film(**retrieved_film_json_dict)
+            f"{FILM_REPOSITORY_FOLDER_PATH}{film_instance_string}{STORAGE_FILE_EXTENSION}",
+            "rb",
+        ) as film_binary_file:
+            retrieved_film = load(film_binary_file)
             return retrieved_film
 
     @classmethod
     def retrieve_series_from_repository(cls, series_instance_string: str) -> Series:
         """
         Takes the string representation of the Series instance as argument and retrieves from the series repository
-        a file with a matching title. Uses the json.load() method to retrieve a dictionary of the instance parameters
+        a file with a matching title. Uses the pickle.load() method to retrieve a dictionary of the instance parameters
         and re-instantiates the Series using Series(**parameters);
         :param series_instance_string: an instance of the Film class;
         :return: n/a
         """
         with open(
-            f"{SERIES_REPOSITORY_FOLDER_PATH}{series_instance_string}{STORAGE_FILE_EXTENSION}"
-        ) as series_json_file:
-            retrieved_series_json_dict = load(series_json_file)
-            retrieved_series = Series(**retrieved_series_json_dict)
+            f"{SERIES_REPOSITORY_FOLDER_PATH}{series_instance_string}{STORAGE_FILE_EXTENSION}",
+            "rb",
+        ) as series_binary_file:
+            retrieved_series = load(series_binary_file)
             return retrieved_series
 
 
@@ -271,6 +285,7 @@ class ShowRepositoryViewer:
     """
     Responsible for basic viewing (in console at this point) operations on the Show repository.
     """
+
     @classmethod
     def view_all_films_in_repository(cls) -> str:
         """
@@ -302,10 +317,7 @@ class ShowRepositoryViewer:
         return printable_list_of_series
 
     @classmethod
-    def retrieve_particular_film_info_from_repository(
-            cls,
-            film_instance_string: str
-    ):
+    def retrieve_particular_film_info_from_repository(cls, film_instance_string: str):
         """
         Retrieves a particular film from film repository and passes it as an argument to the method responsible
         for creating a string with full film info;
@@ -319,8 +331,7 @@ class ShowRepositoryViewer:
 
     @classmethod
     def retrieve_particular_series_info_from_repository(
-        cls,
-        series_instance_string: str
+        cls, series_instance_string: str
     ):
         """
         Retrieves a particular series from series repository and passes it as an argument to the method responsible
@@ -335,6 +346,11 @@ class ShowRepositoryViewer:
 
     @classmethod
     def display_full_film_info(cls, film_class_instance: Film) -> str:
+        """
+        Returns a string that contains all the relevant info for a particular film.
+        :param film_class_instance: An instance of the Film class.
+        :return: a string containing full film info.
+        """
         return (
             f"{str(film_class_instance)}\n"
             f"{film_class_instance.genre.capitalize()}\n"
@@ -347,6 +363,11 @@ class ShowRepositoryViewer:
 
     @classmethod
     def display_full_series_info(cls, series_class_instance: Series) -> str:
+        """
+        Returns a string that contains all the relevant info for a particular series.
+        :param series_class_instance: An instance of the Series class.
+        :return: a string containing full series info.
+        """
         return (
             f"{str(series_class_instance)}\n"
             f"{series_class_instance.genre.capitalize()}\n"
@@ -361,6 +382,11 @@ class ShowRepositoryViewer:
     def create_printable_list_of_episodes_for_series(
         cls, series_class_instance: Series
     ) -> str:
+        """
+        Creates a printable (in the console) list of episodes for a given series instance.
+        :param series_class_instance: An instance of the Series class.
+        :return: A string containing the list.
+        """
         episode_list = ""
         if series_class_instance.seasons:
             for season in series_class_instance.seasons:
@@ -371,8 +397,19 @@ class ShowRepositoryViewer:
 
 
 class RecommendationManager:
+    """
+    Class responsible for the logic of creating recommendations for users based on their ratings.
+    """
+
     @classmethod
     def create_preference_table_for_user(cls, user_class_instance) -> Dict[str, int]:
+        """
+        Creates a 'preference table' - that is a dictionary that contains the sums of all user ratings for
+        a particular genre and assigns these sums to their respective genres.
+        :param user_class_instance: an instance of the CommonUser class;
+        :return: a dictionary whose keys are the available genres and values are the sums of user
+        ratings for a given genre.
+        """
         preference_table = dict.fromkeys(GENRES, 0)
         for user_rating in user_class_instance.user_ratings:
             preference_table[
@@ -382,9 +419,19 @@ class RecommendationManager:
 
     @classmethod
     def create_recommendation_number_table_for_user(
-        cls,
-        preference_table: dict
+        cls, preference_table: dict
     ) -> Dict[str, int]:
+        """
+        Creates a table containing the number of recommendations for a given user based on their preference
+        table. It takes into account the maximum number of recommendations (by default it is the len() of
+        the genre list) and defines a minimum amount of rating 'points' a genre needs to have in order to
+        warrant one recommendation. This is done basically by dividing the sum of all ratings by the max number of
+        recommendations.
+        :param preference_table: a dictionary whose keys are the available genres and values are the sums of user
+        ratings for a given genre.
+        :return: a dictionary whose keys are the available genres and the values represent the number of
+        recommendations to be included for every genre.
+        """
         sum_of_ratings = sum(preference_table.values())
         score_required_for_recommendation = round(
             sum_of_ratings / NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED, 1
@@ -399,6 +446,12 @@ class RecommendationManager:
 
     @classmethod
     def create_list_of_suggested_films_for_user(cls, user_class_instance) -> List[str]:
+        """
+        Creates the list of recommended titles for a given user based on their ratings. Utilizes the preference table
+        and recommendations table from separate methods.
+        :param user_class_instance: an instance of the CommonUser class.
+        :return: a list of suggested titles.
+        """
         preference_table = cls.create_preference_table_for_user(user_class_instance)
         recommendation_number_table = cls.create_recommendation_number_table_for_user(
             preference_table
@@ -410,18 +463,28 @@ class RecommendationManager:
             user_class_instance=user_class_instance,
             recommendation_number_table=recommendation_number_table,
             list_of_all_films=list_of_all_films,
-            suggested_films=suggested_films
+            suggested_films=suggested_films,
         )
         return suggested_films
 
     @classmethod
     def designate_films_to_be_added_to_recommendations(
-            cls,
-            user_class_instance,
-            recommendation_number_table: Dict[str, int],
-            list_of_all_films: List[str],
-            suggested_films: List[str]
+        cls,
+        user_class_instance,
+        recommendation_number_table: Dict[str, int],
+        list_of_all_films: List[str],
+        suggested_films: List[str],
     ):
+        """
+        Iterates through the users recommendations table and  film files in the show repository and
+        designates films to be added to the recommendations list based on their genre.
+        :param user_class_instance: an instance of the CommonUser class.
+        :param recommendation_number_table: a dictionary whose keys are the available genres and the values represent
+        the number of recommendations to be included for every genre.
+        :param list_of_all_films: a list of all film titles available in the show repository.
+        :param suggested_films: a list of titles suggested to a given user.
+        :return: n/a - the objective is to modify lists existing in the scope of another function.
+        """
         for genre, number in recommendation_number_table.items():
             for n in range(number):
                 for film in list_of_all_films:
@@ -438,8 +501,14 @@ class RecommendationManager:
                             suggested_films.append(film)
                             break
 
-    @classmethod  # TO BE CHANGES
+    @classmethod
     def create_list_of_suggested_series_for_user(cls, user_class_instance) -> List[str]:
+        """
+        Creates the list of recommended series titles for a given user based on their ratings. Utilizes the
+        preference table and recommendations table from separate methods.
+        :param user_class_instance: an instance of the CommonUser class.
+        :return: a list of suggested series titles.
+        """
         preference_table = cls.create_preference_table_for_user(user_class_instance)
         recommendation_number_table = cls.create_recommendation_number_table_for_user(
             preference_table
@@ -451,30 +520,42 @@ class RecommendationManager:
             user_class_instance=user_class_instance,
             recommendation_number_table=recommendation_number_table,
             list_of_all_series=list_of_all_series,
-            suggested_series=suggested_series
+            suggested_series=suggested_series,
         )
         return suggested_series
 
     @classmethod
     def designate_series_to_be_added_to_recommendations(
-            cls,
-            user_class_instance,
-            recommendation_number_table: Dict[str, int],
-            list_of_all_series: List[str],
-            suggested_series: List[str]
+        cls,
+        user_class_instance,
+        recommendation_number_table: Dict[str, int],
+        list_of_all_series: List[str],
+        suggested_series: List[str],
     ):
+        """
+        Iterates through the users recommendations table and series files in the show repository and
+        designates series to be added to the recommendations list based on their genre.
+        :param user_class_instance: an instance of the CommonUser class.
+        :param recommendation_number_table: a dictionary whose keys are the available genres and the values represent
+        the number of recommendations to be included for every genre.
+        :param list_of_all_series: a list of all series titles available in the show repository.
+        :param suggested_series: a list of titles suggested to a given user.
+        :return: n/a - the objective is to modify lists existing in the scope of another function.
+        """
         for genre, number in recommendation_number_table.items():
             for n in range(number):
-                for film in list_of_all_series:
+                for series in list_of_all_series:
                     if (
-                            film in user_class_instance.user_ratings.keys()
-                            or film in suggested_series
+                        series in user_class_instance.user_ratings.keys()
+                        or series in suggested_series
                     ):
                         pass
                     else:
-                        film_object = (
-                            ShowRepositoryManager.retrieve_film_from_repository(film)
+                        series_object = (
+                            ShowRepositoryManager.retrieve_series_from_repository(
+                                series
+                            )
                         )
-                        if film_object.genre == genre:
-                            suggested_series.append(film)
+                        if series_object.genre == genre:
+                            suggested_series.append(series)
                             break

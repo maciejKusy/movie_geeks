@@ -14,17 +14,17 @@
 #
 # Docstrings + typehints + no getters or setters
 
-# DAWAC TYPEHINTS DEFINIUJAC PARAMETRY INSTANCJI;
-# MYPY(typehints), BLACK(autoformatting), ISORT, FLAKE8;
 # Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
 # .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych
 
 from src.classes.manager_classes import (
+    EpisodeCreator,
     FilmCreator,
+    RecommendationManager,
+    SeasonCreator,
+    SeriesCreator,
     ShowRepositoryManager,
     ShowRepositoryViewer,
-    SeriesCreator,
-    RecommendationManager,
 )
 from src.classes.user_classes import CommonUser
 
@@ -70,12 +70,18 @@ def main():
     # FilmCreator.create_film_and_add_to_repository('comedy 3', '_', 'comedy', 2003, 'some gal', 92)
     # FilmCreator.create_film_and_add_to_repository('comedy 4', '_', 'comedy', 2010, 'some dir', 107)
     # FilmCreator.create_film_and_add_to_repository('comedy 5', '_', 'comedy', 1995, 'the dude', 99)
+    # SeriesCreator.create_series_and_add_to_repository('comedy series 1', '_', 'comedy', 1999, 'some guy', 7)
+    # SeriesCreator.create_series_and_add_to_repository('comedy series 2', '_', 'comedy', 1989, 'some guy', 7)
+    # SeriesCreator.create_series_and_add_to_repository('comedy series 3', '_', 'comedy', 1979, 'some guy', 7)
+    # SeriesCreator.create_series_and_add_to_repository('drama series 1', '_', 'drama', 1999, 'some guy', 7)
+    # SeriesCreator.create_series_and_add_to_repository('drama series 2', '_', 'drama', 1999, 'some guy', 7)
+    # SeriesCreator.create_series_and_add_to_repository('sitcom series 1', '_', 'sitcom', 1999, 'some guy', 7)
     # user1 = CommonUser('Rodrigo6969')
     # user1.rate_film('Horror 1 (1999)', 5)
     # user1.rate_film('Horror 2 (1987)', 10)
     # user1.rate_film('Comedy 1 (1999)', 10)
-    # print(RecommendationManager.create_list_of_suggested_titles_for_user(user1))
-
+    # print(RecommendationManager.create_list_of_suggested_films_for_user(user1))
+    # print(RecommendationManager.create_list_of_suggested_series_for_user(user1))
     pass
 
 

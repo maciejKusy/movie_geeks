@@ -1,20 +1,25 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+
 from ..constants.constant_values import (
-    GENRES,
-    TITLE_MAX_LENGTH,
-    DESCRIPTION_MAX_LENGTH,
     AUTHOR_NAME_MAX_LENGTH,
+    DESCRIPTION_MAX_LENGTH,
+    GENRES,
     MAX_DURATION,
-    MAX_SEASONS,
     MAX_EPISODES_PER_SEASON,
-    YEAR_OF_FIRST_MOVIE,
-    MINIMUM_RATING,
+    MAX_SEASONS,
     MAXIMUM_RATING,
+    MINIMUM_RATING,
+    TITLE_MAX_LENGTH,
+    YEAR_OF_FIRST_MOVIE,
 )
 
 
 class Validator(ABC):
+    """
+    An abstract class for validators - classes responsible for validating data that is passed to Show class
+    constructors. ValueError is raised if any of the data fails validation.
+    """
     @abstractmethod
     def validate(self, value):
         pass
