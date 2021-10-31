@@ -44,6 +44,28 @@ class CommonUser(User):
         except ValueError as error:
             self.__handle_value_error(error)
 
+    def rate_series(self, series_instance_string: str, user_rating: int):
+        """
+        Adds a rating of a particular value to a particular series in repository.
+        :param series_instance_string: a str representation of a series.
+        :param user_rating: the value of the user rating.
+        :return: n/a
+        """
+        try:
+            user_rating = RatingValidator.validate(user_rating)
+            series_rated = ShowRepositoryManager.retrieve_film_from_repository(
+                series_instance_string
+            )
+
+            self.add_rating(series_instance_string, series_rated.genre, user_rating)
+            series_rated.add_rating(self.user_id, user_rating)
+            series_rated.calculate_average_rating()
+
+            ShowRepositoryManager.add_series_to_repository(series_rated)
+            return
+        except ValueError as error:
+            self.__handle_value_error(error)
+
     def add_rating(self, show_instance_string: str, genre: str, rating: int):
         """
         Adds the user rating to the dict of all ratings for a particular user.
