@@ -9,7 +9,8 @@ from ..constants.constant_values import (
     SERIES_REPOSITORY_FOLDER_PATH,
     STORAGE_FILE_EXTENSION,
 )
-from .show_classes import Episode, Film, Season, Series
+from .show_classes import Episode, Film, Season, Series, Show
+from .api_data_retrieval_classes import ImdbApiDataRetriever
 
 
 class Creator:
@@ -393,6 +394,19 @@ class ShowRepositoryViewer:
                 for episode in season.episodes:
                     episode_list += f"{str(episode)}\n"
             return episode_list
+
+    @classmethod
+    def create_printable_full_cast_info_for_show(cls, show_instance: Show) -> str:
+        """
+        Interacts with the class responsible for data retrieval from
+        :param show_instance: an instance of the Show parent class.
+        :return: a string representation of the full cast of a given show.
+        """
+        full_cast_dict = ImdbApiDataRetriever.retrieve_show_full_cast(show_instance)
+        full_cast_string = str()
+        for actor in full_cast_dict:
+            full_cast_string += f'{actor["name"]} as {actor["asCharacter"]}\n'
+        return full_cast_string
 
 
 class RecommendationManager:
