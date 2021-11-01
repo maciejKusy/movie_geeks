@@ -28,7 +28,6 @@ from src.classes.manager_classes import (
 )
 from src.classes.user_classes import CommonUser
 
-
 def main():
     # ---------- BELOW SNIPPET ILLUSTRATES THE PROCESS OF RATING A FILM ---------- #
 
