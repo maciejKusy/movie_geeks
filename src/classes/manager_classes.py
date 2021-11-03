@@ -1,14 +1,11 @@
-from pickle import dump, load
 from os import listdir
+from pickle import dump, load
 from typing import Dict, List
 
 from ..constants.constant_values import (
-    FILM_REPOSITORY_FOLDER_PATH,
-    GENRES,
-    NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED,
-    SERIES_REPOSITORY_FOLDER_PATH,
-    STORAGE_FILE_EXTENSION,
-)
+    FILM_REPOSITORY_FOLDER_PATH, GENRES,
+    NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED, SERIES_REPOSITORY_FOLDER_PATH,
+    STORAGE_FILE_EXTENSION)
 from .show_classes import Episode, Film, Season, Series
 
 
@@ -427,7 +424,14 @@ class RecommendationManager:
         ratings_table = dict()
         for film in list_of_all_films:
             film_instance = ShowRepositoryManager.retrieve_film_from_repository(film)
-            ratings_table.update({film: {'rating': film_instance.average_rating, 'genre': film_instance.genre}})
+            ratings_table.update(
+                {
+                    film: {
+                        "rating": film_instance.average_rating,
+                        "genre": film_instance.genre,
+                    }
+                }
+            )
         return ratings_table
 
     @classmethod
@@ -440,10 +444,19 @@ class RecommendationManager:
         :return: a dictionary containing films sorted from the highest rating to the lowest.
         """
         ratings_table = cls.__create_film_ratings_table()
-        sorted_ratings = sorted(ratings_table.items(), key=lambda x: x[1]['rating'], reverse=True)
+        sorted_ratings = sorted(
+            ratings_table.items(), key=lambda x: x[1]["rating"], reverse=True
+        )
         film_ranking = dict()
         for rating in sorted_ratings:
-            film_ranking.update({rating[0]: {'rating': rating[1]['rating'], 'genre': rating[1]['genre']}})
+            film_ranking.update(
+                {
+                    rating[0]: {
+                        "rating": rating[1]["rating"],
+                        "genre": rating[1]["genre"],
+                    }
+                }
+            )
         return film_ranking
 
     @classmethod
@@ -457,8 +470,17 @@ class RecommendationManager:
         list_of_all_series = ShowRepositoryManager.list_all_series_in_repository()
         ratings_table = dict()
         for series in list_of_all_series:
-            series_instance = ShowRepositoryManager.retrieve_film_from_repository(series)
-            ratings_table.update({series: {'rating': series_instance.average_rating, 'genre': series_instance.genre}})
+            series_instance = ShowRepositoryManager.retrieve_series_from_repository(
+                series
+            )
+            ratings_table.update(
+                {
+                    series: {
+                        "rating": series_instance.average_rating,
+                        "genre": series_instance.genre,
+                    }
+                }
+            )
         return ratings_table
 
     @classmethod
@@ -471,10 +493,19 @@ class RecommendationManager:
         :return: a dictionary containing series' sorted from the highest rating to the lowest.
         """
         ratings_table = cls.__create_series_ratings_table()
-        sorted_ratings = sorted(ratings_table.items(), key=lambda x: x[1]['rating'], reverse=True)
+        sorted_ratings = sorted(
+            ratings_table.items(), key=lambda x: x[1]["rating"], reverse=True
+        )
         series_ranking = dict()
         for rating in sorted_ratings:
-            series_ranking.update({rating[0]: {'rating': rating[1]['rating'], 'genre': rating[1]['genre']}})
+            series_ranking.update(
+                {
+                    rating[0]: {
+                        "rating": rating[1]["rating"],
+                        "genre": rating[1]["genre"],
+                    }
+                }
+            )
         return series_ranking
 
     @classmethod
@@ -486,7 +517,9 @@ class RecommendationManager:
         :return: a list of suggested films.
         """
         preference_table = cls.__create_preference_table_for_user(user_class_instance)
-        recommendation_number_table = cls.__create_recommendation_number_table_for_user(preference_table)
+        recommendation_number_table = cls.__create_recommendation_number_table_for_user(
+            preference_table
+        )
         film_ranking = cls.__create_film_ranking()
         suggested_films = list()
 
@@ -507,7 +540,9 @@ class RecommendationManager:
         :return: a list of suggested series.
         """
         preference_table = cls.__create_preference_table_for_user(user_class_instance)
-        recommendation_number_table = cls.__create_recommendation_number_table_for_user(preference_table)
+        recommendation_number_table = cls.__create_recommendation_number_table_for_user(
+            preference_table
+        )
         series_ranking = cls.__create_series_ranking()
         suggested_series = list()
 
@@ -521,11 +556,11 @@ class RecommendationManager:
 
     @classmethod
     def __designate_shows_to_be_added_to_recommendations(
-            cls,
-            user_class_instance,
-            recommendation_number_table: Dict[str, int],
-            ranking: dict,
-            suggested_shows: List[str],
+        cls,
+        user_class_instance,
+        recommendation_number_table: Dict[str, int],
+        ranking: dict,
+        suggested_shows: List[str],
     ):
         """
         Uses the show ranking and the user's recommendation number table to provide recommendations
@@ -540,14 +575,9 @@ class RecommendationManager:
         for genre, number in recommendation_number_table.items():
             for n in range(number):
                 for show in ranking.keys():
-                    if (
-                            show in all_shows_rated_by_user
-                            or show in suggested_shows
-                    ):
+                    if show in all_shows_rated_by_user or show in suggested_shows:
                         pass
                     else:
-                        if ranking[show]['genre'] == genre:
+                        if ranking[show]["genre"] == genre:
                             suggested_shows.append(show)
                             break
-
-
