@@ -316,34 +316,6 @@ class ShowRepositoryViewer:
         return printable_list_of_series
 
     @classmethod
-    def retrieve_particular_film_info_from_repository(cls, film_instance_string: str):
-        """
-        Retrieves a particular film from film repository and passes it as an argument to the method responsible
-        for creating a string with full film info;
-        :param film_instance_string: a string representation of a Film instance;
-        :return: a string containing the full film info;
-        """
-        film_viewed = ShowRepositoryManager.retrieve_film_from_repository(
-            film_instance_string
-        )
-        return cls.display_full_film_info(film_viewed)
-
-    @classmethod
-    def retrieve_particular_series_info_from_repository(
-        cls, series_instance_string: str
-    ):
-        """
-        Retrieves a particular series from series repository and passes it as an argument to the method responsible
-        for creating a string with full series info;
-        :param series_instance_string: a string representation of a Series instance;
-        :return: a string containing the full series info;
-        """
-        series_viewed = ShowRepositoryManager.retrieve_series_from_repository(
-            series_instance_string
-        )
-        return cls.display_full_series_info(series_viewed)
-
-    @classmethod
     def display_full_film_info(cls, film_class_instance: Film) -> str:
         """
         Returns a string that contains all the relevant info for a particular film.
@@ -401,7 +373,7 @@ class RecommendationManager:
     """
 
     @classmethod
-    def create_preference_table_for_user(cls, user_class_instance) -> Dict[str, int]:
+    def __create_preference_table_for_user(cls, user_class_instance) -> Dict[str, int]:
         """
         Creates a 'preference table' - that is a dictionary that contains the sums of all user ratings for
         a particular genre and assigns these sums to their respective genres.
@@ -417,7 +389,7 @@ class RecommendationManager:
         return preference_table
 
     @classmethod
-    def create_recommendation_number_table_for_user(
+    def __create_recommendation_number_table_for_user(
         cls, preference_table: dict
     ) -> Dict[str, int]:
         """
@@ -444,117 +416,138 @@ class RecommendationManager:
         return recommendation_number_table
 
     @classmethod
+    def __create_film_ratings_table(cls) -> Dict:
+        """
+        Iterates through film titles available in the film repository and creates a dict of films with their
+        average scores.
+        :return: Dictionary where the keys are the film string representations and the values are the films'
+        average ratings.
+        """
+        list_of_all_films = ShowRepositoryManager.list_all_films_in_repository()
+        ratings_table = dict()
+        for film in list_of_all_films:
+            film_instance = ShowRepositoryManager.retrieve_film_from_repository(film)
+            ratings_table.update({film: {'rating': film_instance.average_rating, 'genre': film_instance.genre}})
+        return ratings_table
+
+    @classmethod
+    def __create_film_ranking(cls) -> Dict:
+        """
+        Creates the ratings table for all available films, converts it to it's .items() list and then sorts the list
+        using a custom key which is the [1]['rating'] indexed item in the pair - the film rating, so the ranking itself,
+        thus creating a dictionary sorted based on the rating itself. The reverse argument is true due to the fact that
+        we want the highest values at the beginning of this dictionary.
+        :return: a dictionary containing films sorted from the highest rating to the lowest.
+        """
+        ratings_table = cls.__create_film_ratings_table()
+        sorted_ratings = sorted(ratings_table.items(), key=lambda x: x[1]['rating'], reverse=True)
+        film_ranking = dict()
+        for rating in sorted_ratings:
+            film_ranking.update({rating[0]: {'rating': rating[1]['rating'], 'genre': rating[1]['genre']}})
+        return film_ranking
+
+    @classmethod
+    def __create_series_ratings_table(cls) -> Dict:
+        """
+        Iterates through series titles available in the series repository and creates a dict of series with their
+        average scores.
+        :return: Dictionary where the keys are the series string representations and the values are the series'
+        average ratings.
+        """
+        list_of_all_series = ShowRepositoryManager.list_all_series_in_repository()
+        ratings_table = dict()
+        for series in list_of_all_series:
+            series_instance = ShowRepositoryManager.retrieve_film_from_repository(series)
+            ratings_table.update({series: {'rating': series_instance.average_rating, 'genre': series_instance.genre}})
+        return ratings_table
+
+    @classmethod
+    def __create_series_ranking(cls) -> Dict:
+        """
+        Creates the ratings table for all available series, converts it to it's .items() list and then sorts the list
+        using a custom key which is the [1]['rating'] indexed item in the pair - the series rating,
+        thus creating a dictionary sorted based on the rating itself. The reverse argument is true due to the fact that
+        we want the highest values at the beginning of this dictionary.
+        :return: a dictionary containing series' sorted from the highest rating to the lowest.
+        """
+        ratings_table = cls.__create_series_ratings_table()
+        sorted_ratings = sorted(ratings_table.items(), key=lambda x: x[1]['rating'], reverse=True)
+        series_ranking = dict()
+        for rating in sorted_ratings:
+            series_ranking.update({rating[0]: {'rating': rating[1]['rating'], 'genre': rating[1]['genre']}})
+        return series_ranking
+
+    @classmethod
     def create_list_of_suggested_films_for_user(cls, user_class_instance) -> List[str]:
         """
         Creates the list of recommended titles for a given user based on their ratings. Utilizes the preference table
         and recommendations table from separate methods.
         :param user_class_instance: an instance of the CommonUser class.
-        :return: a list of suggested titles.
+        :return: a list of suggested films.
         """
-        preference_table = cls.create_preference_table_for_user(user_class_instance)
-        recommendation_number_table = cls.create_recommendation_number_table_for_user(
-            preference_table
-        )
+        preference_table = cls.__create_preference_table_for_user(user_class_instance)
+        recommendation_number_table = cls.__create_recommendation_number_table_for_user(preference_table)
+        film_ranking = cls.__create_film_ranking()
         suggested_films = list()
-        list_of_all_films = ShowRepositoryManager.list_all_films_in_repository()
 
-        cls.designate_films_to_be_added_to_recommendations(
+        cls.__designate_shows_to_be_added_to_recommendations(
             user_class_instance=user_class_instance,
             recommendation_number_table=recommendation_number_table,
-            list_of_all_films=list_of_all_films,
-            suggested_films=suggested_films,
+            ranking=film_ranking,
+            suggested_shows=suggested_films,
         )
         return suggested_films
 
     @classmethod
-    def designate_films_to_be_added_to_recommendations(
-        cls,
-        user_class_instance,
-        recommendation_number_table: Dict[str, int],
-        list_of_all_films: List[str],
-        suggested_films: List[str],
-    ):
-        """
-        Iterates through the users recommendations table and  film files in the show repository and
-        designates films to be added to the recommendations list based on their genre.
-        :param user_class_instance: an instance of the CommonUser class.
-        :param recommendation_number_table: a dictionary whose keys are the available genres and the values represent
-        the number of recommendations to be included for every genre.
-        :param list_of_all_films: a list of all film titles available in the show repository.
-        :param suggested_films: a list of titles suggested to a given user.
-        :return: n/a - the objective is to modify lists existing in the scope of another function.
-        """
-        for genre, number in recommendation_number_table.items():
-            for n in range(number):
-                for film in list_of_all_films:
-                    if (
-                        film in user_class_instance.user_ratings.keys()
-                        or film in suggested_films
-                    ):
-                        pass
-                    else:
-                        film_object = (
-                            ShowRepositoryManager.retrieve_film_from_repository(film)
-                        )
-                        if film_object.genre == genre:
-                            suggested_films.append(film)
-                            break
-
-    @classmethod
     def create_list_of_suggested_series_for_user(cls, user_class_instance) -> List[str]:
         """
-        Creates the list of recommended series titles for a given user based on their ratings. Utilizes the
-        preference table and recommendations table from separate methods.
+        Creates the list of recommended titles for a given user based on their ratings. Utilizes the preference table
+        and recommendations table from separate methods.
         :param user_class_instance: an instance of the CommonUser class.
-        :return: a list of suggested series titles.
+        :return: a list of suggested series.
         """
-        preference_table = cls.create_preference_table_for_user(user_class_instance)
-        recommendation_number_table = cls.create_recommendation_number_table_for_user(
-            preference_table
-        )
+        preference_table = cls.__create_preference_table_for_user(user_class_instance)
+        recommendation_number_table = cls.__create_recommendation_number_table_for_user(preference_table)
+        series_ranking = cls.__create_series_ranking()
         suggested_series = list()
-        list_of_all_series = ShowRepositoryManager.list_all_series_in_repository()
 
-        cls.designate_series_to_be_added_to_recommendations(
+        cls.__designate_shows_to_be_added_to_recommendations(
             user_class_instance=user_class_instance,
             recommendation_number_table=recommendation_number_table,
-            list_of_all_series=list_of_all_series,
-            suggested_series=suggested_series,
+            ranking=series_ranking,
+            suggested_shows=suggested_series,
         )
         return suggested_series
 
     @classmethod
-    def designate_series_to_be_added_to_recommendations(
-        cls,
-        user_class_instance,
-        recommendation_number_table: Dict[str, int],
-        list_of_all_series: List[str],
-        suggested_series: List[str],
+    def __designate_shows_to_be_added_to_recommendations(
+            cls,
+            user_class_instance,
+            recommendation_number_table: Dict[str, int],
+            ranking: dict,
+            suggested_shows: List[str],
     ):
         """
-        Iterates through the users recommendations table and series files in the show repository and
-        designates series to be added to the recommendations list based on their genre.
+        Uses the show ranking and the user's recommendation number table to provide recommendations
+        of the highest ranked shows that have the desired genre.
         :param user_class_instance: an instance of the CommonUser class.
-        :param recommendation_number_table: a dictionary whose keys are the available genres and the values represent
-        the number of recommendations to be included for every genre.
-        :param list_of_all_series: a list of all series titles available in the show repository.
-        :param suggested_series: a list of titles suggested to a given user.
-        :return: n/a - the objective is to modify lists existing in the scope of another function.
+        :param recommendation_number_table: the dictionary containing genre: number_of_recommendations_due pairs.
+        :param ranking: the overall ratings ranking of all available shows.
+        :param suggested_shows: an empty list that is populated by this method.
+        :return: a list of titles recommended for a given user.
         """
+        all_shows_rated_by_user = user_class_instance.user_ratings.keys()
         for genre, number in recommendation_number_table.items():
             for n in range(number):
-                for series in list_of_all_series:
+                for show in ranking.keys():
                     if (
-                        series in user_class_instance.user_ratings.keys()
-                        or series in suggested_series
+                            show in all_shows_rated_by_user
+                            or show in suggested_shows
                     ):
                         pass
                     else:
-                        series_object = (
-                            ShowRepositoryManager.retrieve_series_from_repository(
-                                series
-                            )
-                        )
-                        if series_object.genre == genre:
-                            suggested_series.append(series)
+                        if ranking[show]['genre'] == genre:
+                            suggested_shows.append(show)
                             break
+
+
