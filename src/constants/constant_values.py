@@ -1,6 +1,8 @@
-from typing import List
-from dotenv import load_dotenv
 from os import environ
+from typing import List
+
+from dotenv import load_dotenv
+
 load_dotenv()
 
 GENRES: List[str] = [
@@ -33,7 +35,10 @@ NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED: int = len(GENRES)
 FILM_REPOSITORY_FOLDER_PATH: str = "show_repository/films/"
 SERIES_REPOSITORY_FOLDER_PATH: str = "show_repository/series/"
 IMDB_API_TOKEN: str = environ.get("IMDB_API_TOKEN")
-IMDB_API_GENERAL_FILM_INFO_PATH: str = f'https://imdb-api.com/API/SearchMovie/{IMDB_API_TOKEN}/'
-IMDB_API_GENERAL_SERIES_INFO_PATH: str = f'https://imdb-api.com/API/SearchSeries/{IMDB_API_TOKEN}/'
-IMDB_API_FULL_CAST_PATH: str = f'https://imdb-api.com/API/FullCast/{IMDB_API_TOKEN}/'
-
+IMDB_API_GENERAL_FILM_INFO_PATH: str = (
+    f"https://imdb-api.com/API/SearchMovie/{IMDB_API_TOKEN}/"
+)
+IMDB_API_GENERAL_SERIES_INFO_PATH: str = (
+    f"https://imdb-api.com/API/SearchSeries/{IMDB_API_TOKEN}/"
+)
+IMDB_API_FULL_CAST_PATH: str = f"https://imdb-api.com/API/FullCast/{IMDB_API_TOKEN}/"

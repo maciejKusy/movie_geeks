@@ -1,18 +1,12 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from ..constants.constant_values import (
-    AUTHOR_NAME_MAX_LENGTH,
-    DESCRIPTION_MAX_LENGTH,
-    GENRES,
-    MAX_DURATION,
-    MAX_EPISODES_PER_SEASON,
-    MAX_SEASONS,
-    MAXIMUM_RATING,
-    MINIMUM_RATING,
-    TITLE_MAX_LENGTH,
-    YEAR_OF_FIRST_MOVIE,
-)
+from ..constants.constant_values import (AUTHOR_NAME_MAX_LENGTH,
+                                         DESCRIPTION_MAX_LENGTH, GENRES,
+                                         MAX_DURATION, MAX_EPISODES_PER_SEASON,
+                                         MAX_SEASONS, MAXIMUM_RATING,
+                                         MINIMUM_RATING, TITLE_MAX_LENGTH,
+                                         YEAR_OF_FIRST_MOVIE)
 
 
 class Validator(ABC):

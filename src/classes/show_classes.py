@@ -1,14 +1,8 @@
-from .validator_classes import (
-    AuthorValidator,
-    DescriptionValidator,
-    DurationValidator,
-    EpisodesNumberValidator,
-    GenreValidator,
-    NumberValidator,
-    SeasonsNumberValidator,
-    TitleValidator,
-    YearOfReleaseValidator,
-)
+from .validator_classes import (AuthorValidator, DescriptionValidator,
+                                DurationValidator, EpisodesNumberValidator,
+                                GenreValidator, NumberValidator,
+                                SeasonsNumberValidator, TitleValidator,
+                                YearOfReleaseValidator)
 
 
 class Show:

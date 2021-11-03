@@ -1,21 +1,18 @@
-from pickle import dump, load
 from os import listdir
+from pickle import dump, load
 from typing import Dict, List
 
 from ..constants.constant_values import (
-    FILM_REPOSITORY_FOLDER_PATH,
-    GENRES,
-    NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED,
-    SERIES_REPOSITORY_FOLDER_PATH,
-    STORAGE_FILE_EXTENSION,
-)
-from .show_classes import Episode, Film, Season, Series, Show
+    FILM_REPOSITORY_FOLDER_PATH, GENRES,
+    NUMBER_OF_RECOMMENDATIONS_TO_BE_DISPLAYED, SERIES_REPOSITORY_FOLDER_PATH,
+    STORAGE_FILE_EXTENSION)
 from .api_data_retrieval_classes import ImdbApiDataRetriever
+from .show_classes import Episode, Film, Season, Series, Show
 
 
 class Creator:
     @classmethod
-    def __handle_value_error(cls, error: ValueError):
+    def handle_value_error(cls, error: ValueError):
         print(error)
 
 
@@ -65,7 +62,7 @@ class FilmCreator(Creator):
                 print(f"{str(film_created)} saved to repository!")
                 return
         except ValueError as error:
-            cls.__handle_value_error(error)
+            super().handle_value_error(error)
 
 
 class SeriesCreator(Creator):
@@ -114,7 +111,7 @@ class SeriesCreator(Creator):
                 print(f"{str(series_created)} saved to repository!")
                 return
         except ValueError as error:
-            cls.__handle_value_error(error)
+            super().handle_value_error(error)
 
 
 class SeasonCreator(Creator):
@@ -143,7 +140,7 @@ class SeasonCreator(Creator):
             else:
                 series_instance.seasons.append(season_created)
         except ValueError as error:
-            cls.__handle_value_error(error)
+            super().handle_value_error(error)
 
 
 class EpisodeCreator(Creator):
@@ -182,7 +179,7 @@ class EpisodeCreator(Creator):
             else:
                 season_instance.episodes.append(episode_created)
         except ValueError as error:
-            cls.__handle_value_error(error)
+            super().handle_value_error(error)
 
 
 class ShowRepositoryManager:
@@ -315,34 +312,6 @@ class ShowRepositoryViewer:
         for series in list_of_series_in_repository:
             printable_list_of_series += f"{series}\n"
         return printable_list_of_series
-
-    @classmethod
-    def retrieve_particular_film_info_from_repository(cls, film_instance_string: str):
-        """
-        Retrieves a particular film from film repository and passes it as an argument to the method responsible
-        for creating a string with full film info;
-        :param film_instance_string: a string representation of a Film instance;
-        :return: a string containing the full film info;
-        """
-        film_viewed = ShowRepositoryManager.retrieve_film_from_repository(
-            film_instance_string
-        )
-        return cls.display_full_film_info(film_viewed)
-
-    @classmethod
-    def retrieve_particular_series_info_from_repository(
-        cls, series_instance_string: str
-    ):
-        """
-        Retrieves a particular series from series repository and passes it as an argument to the method responsible
-        for creating a string with full series info;
-        :param series_instance_string: a string representation of a Series instance;
-        :return: a string containing the full series info;
-        """
-        series_viewed = ShowRepositoryManager.retrieve_series_from_repository(
-            series_instance_string
-        )
-        return cls.display_full_series_info(series_viewed)
 
     @classmethod
     def display_full_film_info(cls, film_class_instance: Film) -> str:

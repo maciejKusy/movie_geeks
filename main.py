@@ -17,15 +17,10 @@
 # Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
 # .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych takich jak API key
 
-from src.classes.manager_classes import (
-    EpisodeCreator,
-    FilmCreator,
-    RecommendationManager,
-    SeasonCreator,
-    SeriesCreator,
-    ShowRepositoryManager,
-    ShowRepositoryViewer,
-)
+from src.classes.manager_classes import (EpisodeCreator, FilmCreator,
+                                         RecommendationManager, SeasonCreator,
+                                         SeriesCreator, ShowRepositoryManager,
+                                         ShowRepositoryViewer)
 from src.classes.user_classes import CommonUser
 
 
@@ -33,9 +28,9 @@ def main():
 
     # ---------- BELOW SNIPPET ILLUSTRATES THE PROCESS OF RATING A FILM ---------- #
 
-    # FilmCreator.create_film_and_add_to_repository('Inception', '_', 'drama', 2010, 'michael curtiz', 102)
-    # inception = ShowRepositoryManager.retrieve_film_from_repository('Inception (2010)')
-    # print(ShowRepositoryViewer.create_printable_full_cast_info_for_show(inception))
+    # SeriesCreator.create_series_and_add_to_repository('Friends', '_', 'sitcom', 1993, 'some dude', 10)
+    # friends = ShowRepositoryManager.retrieve_series_from_repository('Friends (1994)')
+    # print(ShowRepositoryViewer.create_printable_full_cast_info_for_show(friends))
     # user1 = CommonUser('Rodrigo6969')
     # user1.rate_film('Casablanca (1958)', 10)
     # user2 = CommonUser('DramaQueen')
