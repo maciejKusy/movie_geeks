@@ -1,36 +1,21 @@
-# Cos jak filmweb:
-#
-# 1. Lista seriali, filmow, filmow krotkometrazowych.
-# 2. Dzielo ma miec tytul, opis, srednia ocene;
-# 3. Seriale maja miec sezony,
-# 4. Kazdy sezon ma miec liste odcinkow
-# 5. Kazdy odcinek ma miec czas trwania i tytul
-# 6. Kazdy film ma miec czas trwania i tytul
-# 7. Kazdy krotkometrazowy ma miec rezysera
-# 8. Miec uzytkownikow na ‘filmwebie’ i zeby kazdy uzytkownik ocenil jakies dzielo
-# 9. Kazdy uzytkownik ma liste “to watch”
-# 10. Kazde dzielo ma kategorie
-# 11. Podpowiedzi dla uzytkownikow w oparciu o oceny
-#
-# Docstrings + typehints + no getters or setters
-
-# Integracja z zewnetrznym API - zeby zwracalo opis filmu - w OSOBNYM BRANCHU
-# .env biblioteka do przechowywania ENV VARIABLES -  sluzy m.in. do przechowywania danych wrazliwych takich jak API key
-
-from src.classes.manager_classes import (EpisodeCreator, FilmCreator,
-                                         RecommendationManager, SeasonCreator,
-                                         SeriesCreator, ShowRepositoryManager,
-                                         ShowRepositoryViewer)
+from src.classes.manager_classes import (
+    EpisodeCreator,
+    FilmCreator,
+    RecommendationManager,
+    SeasonCreator,
+    SeriesCreator,
+    ShowRepositoryManager,
+    ShowRepositoryViewer,
+)
 from src.classes.user_classes import CommonUser
+
+# CREATE DEMONSTRATIONS CLASS!!!!!!!!!!
 
 
 def main():
-
     # ---------- BELOW SNIPPET ILLUSTRATES THE PROCESS OF RATING A FILM ---------- #
 
-    # SeriesCreator.create_series_and_add_to_repository('Friends', '_', 'sitcom', 1993, 'some dude', 10)
-    # friends = ShowRepositoryManager.retrieve_series_from_repository('Friends (1994)')
-    # print(ShowRepositoryViewer.create_printable_full_cast_info_for_show(friends))
+    # FilmCreator.create_film_and_add_to_repository('Casablanca', '_', 'drama', 1958, 'michael curtiz', 102)
     # user1 = CommonUser('Rodrigo6969')
     # user1.rate_film('Casablanca (1958)', 10)
     # user2 = CommonUser('DramaQueen')
@@ -90,7 +75,6 @@ def main():
     # SeriesCreator.create_series_and_add_to_repository('drama series 1', '_', 'drama', 1999, 'some guy', 7)
     # SeriesCreator.create_series_and_add_to_repository('drama series 2', '_', 'drama', 1999, 'some guy', 7)
     # SeriesCreator.create_series_and_add_to_repository('sitcom series 1', '_', 'sitcom', 1999, 'some guy', 7)
-
     # print(RecommendationManager.create_list_of_suggested_films_for_user(user1))
     # print(RecommendationManager.create_list_of_suggested_series_for_user(user1))
     pass
