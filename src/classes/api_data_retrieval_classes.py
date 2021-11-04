@@ -45,7 +45,7 @@ class ImdbApiDataRetriever:
         try:
             show_data = get(general_info_api_path)
             show_data_dict = show_data.json()
-            show_imdb_id = show_data_dict["results"][0]["id"]
+            show_imdb_id = show_data_dict["results"][0]["id"]   # try getattr
             return show_imdb_id
         except exceptions.RequestException as error:
             cls.__handle_api_error(error)
@@ -61,4 +61,4 @@ class ImdbApiDataRetriever:
         full_cast_api_path = f"{IMDB_API_FULL_CAST_PATH}{show_id}"
         full_cast_data = get(full_cast_api_path)
         full_cast_dict = full_cast_data.json()
-        return full_cast_dict["actors"]
+        return full_cast_dict["actors"]     # getattr
