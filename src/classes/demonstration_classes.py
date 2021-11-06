@@ -35,7 +35,7 @@ class FeatureDemonstrationManager:
 
         # Now we want to access the properties of a given movie so let's retrieve it from the repository:
         casablanca = ShowRepositoryManager.retrieve_film_from_repository(
-            "Casablanca (1958)"
+            "Casablanca (1948)"
         )
         print(casablanca.average_rating)
 

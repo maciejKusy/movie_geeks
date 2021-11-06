@@ -13,7 +13,7 @@ class User:
         self.to_watch_list = []
 
     @classmethod
-    def __handle_value_error(cls, error):
+    def handle_value_error(cls, error):
         print(error)
 
 
@@ -43,7 +43,7 @@ class CommonUser(User):
             ShowRepositoryManager.add_film_to_repository(film_rated)
             return
         except ValueError as error:
-            self.__handle_value_error(error)
+            self.handle_value_error(error)
 
     def rate_series(self, series_instance_string: str, user_rating: int):
         """
@@ -65,7 +65,7 @@ class CommonUser(User):
             ShowRepositoryManager.add_series_to_repository(series_rated)
             return
         except ValueError as error:
-            self.__handle_value_error(error)
+            super().handle_value_error(error)
 
     def add_rating(self, show_instance_string: str, genre: str, rating: int):
         """
