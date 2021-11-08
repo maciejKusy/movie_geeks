@@ -4,7 +4,8 @@ from requests import exceptions, get
 
 from ..constants.constant_values import (IMDB_API_FULL_CAST_PATH,
                                          IMDB_API_GENERAL_FILM_INFO_PATH,
-                                         IMDB_API_GENERAL_SERIES_INFO_PATH)
+                                         IMDB_API_GENERAL_SERIES_INFO_PATH,
+                                         IMDB_API_PLOT_SUMMARY_PATH)
 from .show_classes import Film, Series, Show
 
 
@@ -45,7 +46,7 @@ class ImdbApiDataRetriever:
         try:
             show_data = get(general_info_api_path)
             show_data_dict = show_data.json()
-            show_imdb_id = show_data_dict["results"][0]["id"]   # try getattr
+            show_imdb_id = show_data_dict["results"][0]["id"]  # try getattr
             return show_imdb_id
         except exceptions.RequestException as error:
             cls.__handle_api_error(error)
@@ -59,6 +60,25 @@ class ImdbApiDataRetriever:
         """
         show_id = cls.__retrieve_show_imdb_id(show_instance)
         full_cast_api_path = f"{IMDB_API_FULL_CAST_PATH}{show_id}"
-        full_cast_data = get(full_cast_api_path)
-        full_cast_dict = full_cast_data.json()
-        return full_cast_dict["actors"]     # getattr
+        try:
+            full_cast_data = get(full_cast_api_path)
+            full_cast_dict = full_cast_data.json()
+            return full_cast_dict["actors"]
+        except exceptions.RequestException as error:
+            cls.__handle_api_error(error)
+
+    @classmethod
+    def retrieve_show_plot_summary(cls, show_instance: Show) -> str:
+        """
+        Based in the IMDB-specific show ID retrieves the plot summary / description of a show.
+        :param show_instance: an instance of one of the Show superclass sub-classes.
+        :return: a dictionary containing information on which actor played whom in a given show.
+        """
+        show_id = cls.__retrieve_show_imdb_id(show_instance)
+        plot_summary_api_path = f"{IMDB_API_PLOT_SUMMARY_PATH}{show_id}"
+        try:
+            plot_summary_data = get(plot_summary_api_path)
+            plot_summary_string = plot_summary_data.json()
+            return plot_summary_string["plot"]
+        except exceptions.RequestException as error:
+            cls.__handle_api_error(error)

@@ -16,18 +16,20 @@ class Show:
     def __init__(
         self,
         show_title: str,
-        description: str,
         genre: str,
         year_of_release: int,
+        description=None,
         all_ratings=None,
         average_rating=None,
     ):
         self.show_title: str = TitleValidator.validate(show_title)
-        self.description: str = DescriptionValidator.validate(description)
         self.genre: str = GenreValidator.validate(genre)
+        self.year_of_release: int = YearOfReleaseValidator.validate(year_of_release)
+        self.description: str = (
+            str() if description is None else DescriptionValidator.validate(description)
+        )
         self.all_ratings: dict = dict() if all_ratings is None else all_ratings
         self.average_rating: float = 0 if average_rating is None else average_rating
-        self.year_of_release: int = YearOfReleaseValidator.validate(year_of_release)
 
     def __str__(self) -> str:
         """
@@ -66,16 +68,16 @@ class Film(Show):
     def __init__(
         self,
         show_title: str,
-        description: str,
         genre: str,
         year_of_release: int,
         director: str,
         duration_in_minutes: int,
+        description=None,
         all_ratings=None,
         average_rating=None,
     ):
         super().__init__(
-            show_title, description, genre, year_of_release, all_ratings, average_rating
+            show_title, genre, year_of_release, description, all_ratings, average_rating
         )
         self.director: str = AuthorValidator.validate(director)
         self.duration_in_minutes: int = DurationValidator.validate(duration_in_minutes)
@@ -89,17 +91,17 @@ class Series(Show):
     def __init__(
         self,
         show_title: str,
-        description: str,
         genre: str,
         year_of_release: int,
         creator: str,
         number_of_seasons: int,
+        description=None,
         all_ratings=None,
         average_rating=None,
         seasons=None,
     ):
         super().__init__(
-            show_title, description, genre, year_of_release, all_ratings, average_rating
+            show_title, genre, year_of_release, description, all_ratings, average_rating
         )
         self.creator: str = AuthorValidator.validate(creator)
         self.number_of_seasons: int = SeasonsNumberValidator.validate(number_of_seasons)

@@ -42,3 +42,4 @@ IMDB_API_GENERAL_SERIES_INFO_PATH: str = (
     f"https://imdb-api.com/API/SearchSeries/{IMDB_API_TOKEN}/"
 )
 IMDB_API_FULL_CAST_PATH: str = f"https://imdb-api.com/API/FullCast/{IMDB_API_TOKEN}/"
+IMDB_API_PLOT_SUMMARY_PATH: str = f"https://imdb-api.com/API/Title/{IMDB_API_TOKEN}/"

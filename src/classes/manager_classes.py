@@ -26,7 +26,6 @@ class FilmCreator(Creator):
     def create_film_and_add_to_repository(
         cls,
         title: str,
-        description: str,
         genre: str,
         year_of_release: int,
         director: str,
@@ -34,7 +33,6 @@ class FilmCreator(Creator):
     ):
         """
         :param title: the title of a movie you want to create and add to repository;
-        :param description: the description of the movie;
         :param genre: the genre of the movie - should be on the list of available genres (constant_values.GENRES);
         :param year_of_release: the year the film was released;
         :param director: the name of the director;
@@ -45,7 +43,6 @@ class FilmCreator(Creator):
         try:
             film_created = Film(
                 show_title=title,
-                description=description,
                 genre=genre,
                 year_of_release=year_of_release,
                 director=director,
@@ -58,6 +55,9 @@ class FilmCreator(Creator):
                 print("Film already in repository!")
                 return
             else:
+                film_created.description = (
+                    ImdbApiDataRetriever.retrieve_show_plot_summary(film_created)
+                )
                 ShowRepositoryManager.add_film_to_repository(film_created)
                 print(f"{str(film_created)} saved to repository!")
                 return
@@ -75,7 +75,6 @@ class SeriesCreator(Creator):
     def create_series_and_add_to_repository(
         cls,
         title: str,
-        description: str,
         genre: str,
         year_of_release: int,
         creator: str,
@@ -83,7 +82,6 @@ class SeriesCreator(Creator):
     ):
         """
         :param title: the title of a series you want to create and add to repository;
-        :param description: the description of the series;
         :param genre: the genre of the series - should be on the list of available genres (constant_values.GENRES);
         :param year_of_release: the year the series was first aired - the year the pilot episode came out;
         :param creator: the name of the creator of the series;
@@ -94,7 +92,6 @@ class SeriesCreator(Creator):
         try:
             series_created = Series(
                 show_title=title,
-                description=description,
                 genre=genre,
                 year_of_release=year_of_release,
                 creator=creator,
@@ -107,6 +104,9 @@ class SeriesCreator(Creator):
                 print("Series already in repository!")
                 return
             else:
+                series_created.description = (
+                    ImdbApiDataRetriever.retrieve_show_plot_summary(series_created)
+                )
                 ShowRepositoryManager.add_series_to_repository(series_created)
                 print(f"{str(series_created)} saved to repository!")
                 return
@@ -367,7 +367,8 @@ class ShowRepositoryViewer:
     @classmethod
     def create_printable_full_cast_info_for_show(cls, show_instance: Show) -> str:
         """
-        Interacts with the class responsible for data retrieval from
+        Interacts with the class responsible for data retrieval from IMDB API and creates a full list
+        of cast for a given show.
         :param show_instance: an instance of the Show parent class.
         :return: a string representation of the full cast of a given show.
         """
@@ -376,6 +377,17 @@ class ShowRepositoryViewer:
         for actor in full_cast_dict:
             full_cast_string += f'{actor["name"]} as {actor["asCharacter"]}\n'
         return full_cast_string
+
+    @classmethod
+    def create_printable_plot_summary_for_show(cls, show_instance: Show) -> str:
+        """
+        Interacts with the class responsible for data retrieval from IMDB API and creates a plot summary
+        or a description for a given show.
+        :param show_instance: an instance of the Show parent class.
+        :return: a string representation of the plot summary/description of a given show.
+        """
+        show_plot = ImdbApiDataRetriever.retrieve_show_plot_summary(show_instance)
+        return show_plot
 
 
 class RecommendationManager:

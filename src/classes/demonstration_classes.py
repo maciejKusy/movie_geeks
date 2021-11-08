@@ -15,10 +15,10 @@ class FeatureDemonstrationManager:
         # First off, let's create two films and save them to the film repository serialized as
         # binary files:
         FilmCreator.create_film_and_add_to_repository(
-            "Casablanca", "_", "drama", 1948, "michael curtiz", 102
+            "Casablanca", "drama", 1948, "michael curtiz", 102
         )
         FilmCreator.create_film_and_add_to_repository(
-            "Hungover", "_", "comedy", 2006, "some guy", 92
+            "Hungover", "comedy", 2006, "some guy", 92
         )
 
         # Next, let's create a couple of CommonUser class instances and have them rate the movies
@@ -55,31 +55,31 @@ class FeatureDemonstrationManager:
         """
         # First, let's create a couple of Series titles and store them in the repository:
         SeriesCreator.create_series_and_add_to_repository(
-            "friends", "_", "comedy", 1994, "some guy", 7
+            "friends", "comedy", 1994, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "louie", "_", "comedy", 2004, "some guy", 7
+            "louie", "comedy", 2004, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "the store", "_", "comedy", 1989, "some guy", 7
+            "the store", "comedy", 1989, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "comedy series 4", "_", "comedy", 1999, "some guy", 7
+            "comedy series 4", "comedy", 1999, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "comedy series 5", "_", "comedy", 1999, "some guy", 7
+            "comedy series 5", "comedy", 1999, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "limps", "_", "comedy", 2018, "some guy", 7
+            "limps", "comedy", 2018, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "little women", "_", "drama", 2002, "some guy", 7
+            "little women", "drama", 2002, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "the court", "_", "drama", 1997, "some guy", 7
+            "the court", "drama", 1997, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "sitdown", "_", "sitcom", 2007, "some guy", 7
+            "sitdown", "sitcom", 2007, "some guy", 7
         )
 
         # Next, let's create some users and have them rate some of the series present in the repository:
@@ -101,22 +101,22 @@ class FeatureDemonstrationManager:
         :return: n/a
         """
         FilmCreator.create_film_and_add_to_repository(
-            "comedy 3", "_", "comedy", 2003, "some gal", 92
+            "comedy 3", "comedy", 2003, "some gal", 92
         )
         FilmCreator.create_film_and_add_to_repository(
-            "comedy 4", "_", "comedy", 2010, "some dir", 107
+            "comedy 4", "comedy", 2010, "some dir", 107
         )
         FilmCreator.create_film_and_add_to_repository(
-            "comedy 5", "_", "comedy", 1995, "the dude", 99
+            "comedy 5", "comedy", 1995, "the dude", 99
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "comedy series 1", "_", "comedy", 1999, "some guy", 7
+            "comedy series 1", "comedy", 1999, "some guy", 7
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "comedy series 2", "_", "comedy", 1989, "some guy", 3
+            "comedy series 2", "comedy", 1989, "some guy", 3
         )
         SeriesCreator.create_series_and_add_to_repository(
-            "comedy series 3", "_", "comedy", 1979, "some guy", 5
+            "comedy series 3", "comedy", 1979, "some guy", 5
         )
 
     @classmethod
@@ -129,7 +129,6 @@ class FeatureDemonstrationManager:
         # First, creating a film and adding it to the repository:
         FilmCreator.create_film_and_add_to_repository(
             "interstellar",
-            "dummy description",
             "science-fiction",
             2014,
             "christopher nolan",
@@ -146,3 +145,15 @@ class FeatureDemonstrationManager:
         print(
             ShowRepositoryViewer.create_printable_full_cast_info_for_show(interstellar)
         )
+
+    @classmethod
+    def demo_viewing_full_data_for_show(cls):
+        """
+        This method demonstrates the feature of displaying full show info for a given Show class instance.
+        :return: n/a
+        """
+        FilmCreator.create_film_and_add_to_repository(
+            "dune", "science-fiction", 2021, "denis villeneuve", 140
+        )
+        dune = ShowRepositoryManager.retrieve_film_from_repository("Dune (2021)")
+        print(ShowRepositoryViewer.display_full_film_info(dune))
