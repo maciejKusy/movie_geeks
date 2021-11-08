@@ -46,8 +46,11 @@ class ImdbApiDataRetriever:
         try:
             show_data = get(general_info_api_path)
             show_data_dict = show_data.json()
-            show_imdb_id = show_data_dict["results"][0]["id"]  # try getattr
-            return show_imdb_id
+            if show_data_dict['results']:
+                show_imdb_id = show_data_dict["results"][0]["id"]
+                return show_imdb_id
+            else:
+                return str()
         except exceptions.RequestException as error:
             cls.__handle_api_error(error)
 
